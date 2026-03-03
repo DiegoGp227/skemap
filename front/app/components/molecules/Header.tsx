@@ -15,8 +15,8 @@ export default function Header() {
           />
         </div>
 
-        <button className="border-2 border-border p-2 rounded-full">
-          <User className="w-10 h-10" />
+        <button className="border-2 border-border p-2 rounded-full cursor-pointer">
+          <User className="w-6 h-6" />
         </button>
       </div>
     </header>
