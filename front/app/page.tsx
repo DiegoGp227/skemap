@@ -1,7 +1,7 @@
 export default function HomePage() {
   return (
     <div>
-      yor are welcome in Skemap
+      <h1>homepage</h1>
     </div>
-  );
+  )
 }

@@ -10,6 +10,47 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* ── Fondos ─────────────────────────────────────────────── */
+  --color-base:    #0d1117; /* bg principal, sidebar, panels  */
+  --color-surface: #161b22; /* cards, rows, epic headers       */
+  --color-overlay: #21262d; /* badges, estimate, hover items   */
+
+  /* ── Bordes ─────────────────────────────────────────────── */
+  --color-border:  #21262d; /* borde por defecto               */
+  --color-ring:    #388bfd; /* hover / foco interactivo        */
+
+  /* ── Texto ──────────────────────────────────────────────── */
+  --color-fg:           #e6edf3; /* títulos, texto principal   */
+  --color-fg-secondary: #c9d1d9; /* descripciones, aceptación  */
+  --color-fg-muted:     #7d8590; /* labels, meta info           */
+
+  /* ── Estados ────────────────────────────────────────────── */
+  --color-status-todo:          #374151;
+  --color-status-todo-text:     #9ca3af;
+  --color-status-progress:      #1e3a5f;
+  --color-status-progress-text: #60a5fa;
+  --color-status-review:        #3b1f5e;
+  --color-status-review-text:   #a78bfa;
+  --color-status-done:          #14532d;
+  --color-status-done-text:     #4ade80;
+
+  /* ── Prioridades ─────────────────────────────────────────── */
+  --color-priority-high:   #ef4444;
+  --color-priority-medium: #f59e0b;
+  --color-priority-low:    #6b7280;
+
+  /* ── Accentos / Épicas ───────────────────────────────────── */
+  --color-accent-blue:   #4a9eff;
+  --color-accent-amber:  #f59e0b;
+  --color-accent-green:  #10b981;
+  --color-accent-purple: #8b5cf6;
+  --color-accent-red:    #ef4444;
+  --color-accent-cyan:   #06b6d4;
+
+  /* ── Otros ──────────────────────────────────────────────── */
+  --color-success:     #238636; /* barra de progreso            */
+  --color-interactive: #388bfd; /* links, botones activos       */
 }
 
 @media (prefers-color-scheme: dark) {
