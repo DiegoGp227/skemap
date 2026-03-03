@@ -13,6 +13,9 @@ const assistant = Assistant({
 export const metadata: Metadata = {
   title: "Skemap",
   description: "Skemap App",
+  icons: {
+    icon: "/skemap_icon.svg",
+  },
 };
 
 export default function RootLayout({
