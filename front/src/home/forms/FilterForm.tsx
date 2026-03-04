@@ -39,7 +39,7 @@ export default function FilterForm() {
   });
 
   return (
-    <form className="flex w-full justify-between p-10 gap-5">
+    <form className="flex w-full justify-between gap-5">
       <input
         placeholder="Shear Project..."
         {...register("search")}
