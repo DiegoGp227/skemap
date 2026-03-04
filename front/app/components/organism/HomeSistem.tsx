@@ -1,7 +1,9 @@
+import FilterForm from "@/src/home/forms/FilterForm";
+
 export default function HomeSistem() {
   return (
     <>
-      {/* <FilterForm /> */}
+      <FilterForm />
       <div></div>
     </>
   );
