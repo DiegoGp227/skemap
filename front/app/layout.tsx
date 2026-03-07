@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${assistant.variable} antialiased bg-main-gray w-full min-h-screen flex flex-col`}
+        className={`${assistant.variable} antialiased  w-full min-h-screen flex flex-col bg-base text-fg`}
       >
         <SWRProvider>
           <Header />

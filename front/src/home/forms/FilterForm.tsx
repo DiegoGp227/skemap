@@ -41,7 +41,7 @@ export default function FilterForm() {
   return (
     <form className="flex w-full justify-between gap-5">
       <input
-        placeholder="Shear Project..."
+        placeholder="search Project..."
         {...register("search")}
         className="w-full p-2 border-2 border-border rounded focus:border-ring focus:outline-none" 
       />
