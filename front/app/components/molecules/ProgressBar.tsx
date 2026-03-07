@@ -8,7 +8,7 @@ export default function ProgressBar({ current, label, total }: IProgressBarProps
   const percentage = total > 0 ? Math.min((current / total) * 100, 100) : 0;
 
   return (
-    <div className="bg-[#1c1c1e] px-4 py-2.5 rounded-md">
+    <div className=" px-4 py-2.5 rounded-md">
       <div className="flex justify-between mb-2">
         <span className="text-[#9a9a9e] text-sm">{current}/{total} {label}</span>
         <span className="text-amber-400 text-sm font-semibold">{Math.round(percentage)}%</span>

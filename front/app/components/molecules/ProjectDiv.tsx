@@ -3,7 +3,7 @@ import ProgressBar from "./ProgressBar";
 
 export default function ProjectDiv() {
   return (
-    <div className="w-100 h-70 p-5 border-2 bg-surface border-border rounded transition duration-500 ease-in-out hover:-translate-y-1 hover:border-ring">
+    <div className="w-100 p-5 border-2 bg-surface border-border rounded transition duration-500 ease-in-out hover:-translate-y-1 hover:border-ring flex flex-col gap-5">
       <div className="flex gap-2">
         <div>
           <div>
