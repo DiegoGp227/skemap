@@ -1,0 +1,110 @@
+// ============================================================
+// Skemap — Prisma Schema
+// Database: PostgreSQL
+// Delete strategy: hard delete with cascade
+//   Project deleted → Epics + Tasks deleted
+//   Epic deleted → Tasks deleted
+//   User delete → Restricted if has projects (default Prisma behavior)
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  DONE
+}
+
+enum TaskPriority {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+// ============================================================
+// MODELS
+// ============================================================
+
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  name      String
+  email     String    @unique
+  password  String    // bcrypt hash
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  projects  Project[]
+}
+
+model Project {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  color       String   
+  status      ProjectStatus @default(ACTIVE)
+  ownerId     Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  owner       User          @relation(fields: [ownerId], references: [id])
+  epics       Epic[]
+
+  @@unique([ownerId, name])  
+  @@index([ownerId])
+}
+
+model Epic {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  color       String   
+  order       Int
+  projectId   Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  @@unique([projectId, order])
+  @@index([projectId])
+}
+
+model Task {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(NONE)
+  order       Int
+  dueDate     DateTime?
+  epicId      Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  epic        Epic         @relation(fields: [epicId], references: [id], onDelete: Cascade)
+
+  @@unique([epicId, order])
+  @@index([epicId])
+}
