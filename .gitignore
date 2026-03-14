@@ -21,6 +21,8 @@ out/
 .env
 .env.*
 !.env.example
+!back/.env.example
+!front/.env.example
 
 # =========================
 # Logs
@@ -51,3 +53,4 @@ Thumbs.db
 .next/
 out/
 next-env.d.ts
+/generated/prisma

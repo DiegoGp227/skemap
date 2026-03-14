@@ -1,0 +1,78 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    network_mode: host
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-skemap}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-skemap}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-skemap}
+      PORT: ${BACK_PORT:-8000}
+    ports:
+      - "${BACK_PORT:-8000}:8000"
+    volumes:
+      - ./back/src:/app/src
+      - ./back/prisma:/app/prisma
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - action: sync
+          path: ./back/src
+          target: /app/src
+        - action: sync
+          path: ./back/prisma
+          target: /app/prisma
+        - action: rebuild
+          path: ./back/package.json
+
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:${BACK_PORT:-8000}/api/
+    ports:
+      - "${FRONT_PORT:-3000}:3000"
+    volumes:
+      - ./front/app:/app/app
+      - ./front/src:/app/src
+      - ./front/store:/app/store
+      - ./front/provider:/app/provider
+      - ./front/style:/app/style
+    depends_on:
+      - back
+    develop:
+      watch:
+        - action: sync
+          path: ./front/app
+          target: /app/app
+        - action: sync
+          path: ./front/src
+          target: /app/src
+        - action: rebuild
+          path: ./front/package.json
+
+volumes:
+  postgres_data:
