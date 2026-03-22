@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skemap — Auth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: 'Inter', system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    input::placeholder { color: #484f58; }
+    input:focus { border-color: #388bfd !important; outline: none; }
+
+    /* WRAPPER */
+    .auth-wrapper {
+      width: 400px;
+      max-width: 95vw;
+    }
+
+    /* LOGO */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+    .logo-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #4a9eff, #a78bfa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .logo-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #e6edf3;
+      letter-spacing: 0.04em;
+    }
+
+    /* CARD */
+    .card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* SLIDER */
+    .slider {
+      display: flex;
+      width: 200%;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .slider.show-signup {
+      transform: translateX(-50%);
+    }
+
+    /* PANEL */
+    .panel {
+      width: 50%;
+      padding: 28px 32px 32px;
+    }
+
+    /* PANEL HEADER */
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #e6edf3;
+      margin-bottom: 4px;
+    }
+    .panel-sub {
+      font-size: 13px;
+      color: #7d8590;
+      margin-bottom: 24px;
+    }
+
+    /* ERROR */
+    .error-msg {
+      display: none;
+      font-size: 12px;
+      color: #f85149;
+      background: #2d0f0f;
+      border: 1px solid #f8514940;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+    }
+    .error-msg.show { display: block; }
+
+    /* FIELDS */
+    .fields { display: flex; flex-direction: column; gap: 14px; }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #7d8590;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .field input {
+      width: 100%;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 9px 12px;
+      color: #e6edf3;
+      font-size: 13px;
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: border-color 0.15s;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* SUBMIT */
+    .btn-submit {
+      width: 100%;
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid #2ea043;
+      background: #238636;
+      color: #fff;
+      cursor: pointer;
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: background 0.15s;
+    }
+    .btn-submit:hover { background: #2ea043; }
+
+    /* FOOTER */
+    .panel-footer {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #21262d;
+      text-align: center;
+      font-size: 13px;
+      color: #7d8590;
+    }
+    .panel-footer button {
+      background: none;
+      border: none;
+      color: #4a9eff;
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'Inter', system-ui, sans-serif;
+      padding: 0;
+    }
+    .panel-footer button:hover { color: #79c0ff; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="auth-wrapper">
+
+  <div class="logo">
+    <div class="logo-icon">S</div>
+    <span class="logo-name">Skemap</span>
+  </div>
+
+  <div class="card">
+    <div class="slider" id="slider">
+
+      <!-- LOGIN -->
+      <div class="panel">
+        <div class="panel-title">Bienvenido de vuelta</div>
+        <div class="panel-sub">Inicia sesión para continuar.</div>
+
+        <div class="error-msg" id="loginError">Correo o contraseña incorrectos.</div>
+
+        <div class="fields">
+          <div class="field">
+            <label>Correo</label>
+            <input type="email" placeholder="tu@email.com" />
+          </div>
+          <div class="field">
+            <label>Contraseña</label>
+            <input type="password" placeholder="••••••••" />
+          </div>
+        </div>
+
+        <button class="btn-submit" onclick="showError('loginError')">Iniciar sesión</button>
+
+        <div class="panel-footer">
+          ¿No tienes cuenta?
+          <button onclick="goTo('signup')">Regístrate aquí</button>
+        </div>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="panel">
+        <div class="panel-title">Crear cuenta</div>
+        <div class="panel-sub">Empieza a organizar tus proyectos.</div>
+
+        <div class="error-msg" id="signupError">El correo ya está en uso.</div>
+
+        <div class="fields">
+          <div class="field-row">
+            <div class="field">
+              <label>Nombre</label>
+              <input type="text" placeholder="Diego" />
+            </div>
+            <div class="field">
+              <label>Usuario</label>
+              <input type="text" placeholder="diegodev" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Correo</label>
+            <input type="email" placeholder="tu@email.com" />
+          </div>
+          <div class="field">
+            <label>Contraseña</label>
+            <input type="password" placeholder="••••••••" />
+          </div>
+        </div>
+
+        <button class="btn-submit" onclick="showError('signupError')">Crear cuenta</button>
+
+        <div class="panel-footer">
+          ¿Ya tienes cuenta?
+          <button onclick="goTo('login')">Inicia sesión aquí</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function goTo(view) {
+    document.getElementById('slider').classList.toggle('show-signup', view === 'signup');
+  }
+
+  function showError(id) {
+    const el = document.getElementById(id);
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+</script>
+
+</body>
+</html>
