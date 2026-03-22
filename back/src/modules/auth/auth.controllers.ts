@@ -1,11 +1,13 @@
+import { Request, Response } from "express";
+import { AppError, InternalServerError, ValidationError } from "../../errors/appError";
+import { createUser } from "./auth.services";
+import { signupSchema } from "./auth.shema";
+
 /**
  * @route POST /signup
  * @body { email, password, name, username?, cutoffDay, currency }
  * @returns { message, token, userInfo }
  */
-
-import { AppError, InternalServerError, ValidationError } from "../../errors/appError";
-import { signupSchema } from "./auth.shema";
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -33,12 +35,8 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         name: user.name,
         userName: user.username,
         email: user.email,
-        role: user.role,
-        status: user.status,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-        currency: user.currency,
-        cutoffDay: user.cutoffDay,
       },
     });
   } catch (error) {

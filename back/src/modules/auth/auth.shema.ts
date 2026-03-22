@@ -29,7 +29,7 @@ export const signupSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
   name: nameSchema,
-  username: usernameSchema.optional(),
+  username: usernameSchema,
 });
 
 /* =========================
