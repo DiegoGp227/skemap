@@ -8,4 +8,4 @@ export const router: Router = Router();
 router.get("/db", dbCheck);
 
 // auth routes
-router.post("/db", signup);
+router.post("/signup", signup);
