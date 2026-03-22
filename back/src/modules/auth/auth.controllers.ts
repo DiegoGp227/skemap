@@ -5,7 +5,7 @@ import { signupSchema } from "./auth.shema";
 
 /**
  * @route POST /signup
- * @body { email, password, name, username?, cutoffDay, currency }
+ * @body { email, password, name, username? }
  * @returns { message, token, userInfo }
  */
 
