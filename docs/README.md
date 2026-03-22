@@ -9,7 +9,7 @@ Cada feature se desarrolla de punta a punta (back + front) antes de pasar al sig
 ## Feature 1 — Auth
 
 **Back**
-- `POST /api/auth/signup`
+✅ - `POST /api/auth/signup`
 - `POST /api/auth/login`
 - `POST /api/auth/refresh`
 - `POST /api/auth/logout`
