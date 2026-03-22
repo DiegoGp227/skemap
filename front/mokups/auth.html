@@ -4,91 +4,232 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Skemap — Auth</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       min-height: 100vh;
-      background: #0d1117;
+      background: #060a10;
       color: #e6edf3;
       font-family: 'Inter', system-ui, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
 
-    input::placeholder { color: #484f58; }
-    input:focus { border-color: #388bfd !important; outline: none; }
-
-    /* WRAPPER */
-    .auth-wrapper {
-      width: 400px;
-      max-width: 95vw;
+    /* ── BACKGROUND GLOW ── */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-1 {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #4a9eff18 0%, transparent 70%);
+      top: -200px;
+      left: -100px;
+    }
+    .glow-2 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #a78bfa14 0%, transparent 70%);
+      bottom: -150px;
+      right: -100px;
+    }
+    .glow-3 {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #23863620 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
-    /* LOGO */
-    .logo {
+    /* ── CARD ── */
+    .card {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      width: 860px;
+      max-width: 98vw;
+      min-height: 540px;
+      border-radius: 16px;
+      border: 1px solid #21262d;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      box-shadow:
+        0 0 0 1px #ffffff06,
+        0 32px 80px #00000080,
+        0 0 60px #4a9eff0a;
+    }
+
+    /* ── LEFT PANEL (branding) ── */
+    .left {
+      width: 42%;
+      flex-shrink: 0;
+      background: linear-gradient(145deg, #0f1923 0%, #0a1628 50%, #0d1117 100%);
+      border-right: 1px solid #21262d;
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative grid lines */
+    .left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(#ffffff04 1px, transparent 1px),
+        linear-gradient(90deg, #ffffff04 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    /* decorative top-right accent */
+    .left::after {
+      content: '';
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #4a9eff1a 0%, transparent 65%);
+    }
+
+    .brand {
+      position: relative;
+      z-index: 1;
+    }
+    .brand-logo {
       display: flex;
       align-items: center;
       gap: 10px;
-      justify-content: center;
-      margin-bottom: 28px;
+      margin-bottom: 48px;
     }
     .logo-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 6px;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       background: linear-gradient(135deg, #4a9eff, #a78bfa);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 800;
       color: #fff;
+      box-shadow: 0 4px 16px #4a9eff30;
     }
     .logo-name {
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 18px;
+      font-weight: 800;
       color: #e6edf3;
-      letter-spacing: 0.04em;
+      letter-spacing: -0.02em;
     }
 
-    /* CARD */
-    .card {
-      background: #161b22;
-      border: 1px solid #21262d;
-      border-radius: 8px;
+    .brand-headline {
+      font-size: 28px;
+      font-weight: 800;
+      color: #e6edf3;
+      line-height: 1.25;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .brand-headline span {
+      background: linear-gradient(90deg, #4a9eff, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .brand-sub {
+      font-size: 13px;
+      color: #7d8590;
+      line-height: 1.7;
+    }
+
+    .brand-features {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: #7d8590;
+    }
+    .feature-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4a9eff, #a78bfa);
+      flex-shrink: 0;
+    }
+
+    /* ── RIGHT PANEL (form) ── */
+    .right {
+      flex: 1;
+      background: #0d1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 40px;
       overflow: hidden;
     }
 
+    .form-area {
+      width: 100%;
+      max-width: 340px;
+    }
+
     /* SLIDER */
+    .slider-wrap {
+      overflow: hidden;
+    }
     .slider {
       display: flex;
       width: 200%;
-      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .slider.show-signup {
       transform: translateX(-50%);
     }
-
-    /* PANEL */
     .panel {
       width: 50%;
-      padding: 28px 32px 32px;
+      padding-right: 32px;
+    }
+    .panel:last-child {
+      padding-right: 0;
     }
 
     /* PANEL HEADER */
     .panel-title {
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 800;
       color: #e6edf3;
+      letter-spacing: -0.02em;
       margin-bottom: 4px;
     }
     .panel-sub {
       font-size: 13px;
       color: #7d8590;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
     }
 
     /* ERROR */
@@ -99,7 +240,7 @@
       background: #2d0f0f;
       border: 1px solid #f8514940;
       border-radius: 6px;
-      padding: 8px 12px;
+      padding: 9px 12px;
       margin-bottom: 16px;
     }
     .error-msg.show { display: block; }
@@ -112,21 +253,27 @@
       font-size: 11px;
       font-weight: 600;
       color: #7d8590;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
     .field input {
       width: 100%;
-      background: #0d1117;
+      background: #161b22;
       border: 1px solid #30363d;
-      border-radius: 6px;
-      padding: 9px 12px;
+      border-radius: 8px;
+      padding: 10px 14px;
       color: #e6edf3;
       font-size: 13px;
       font-family: 'Inter', system-ui, sans-serif;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
+    .field input:focus {
+      border-color: #388bfd !important;
+      outline: none;
+      box-shadow: 0 0 0 3px #388bfd18;
+    }
+    input::placeholder { color: #484f58; }
 
     .field-row {
       display: grid;
@@ -137,24 +284,28 @@
     /* SUBMIT */
     .btn-submit {
       width: 100%;
-      margin-top: 20px;
-      padding: 10px;
-      border-radius: 6px;
+      margin-top: 22px;
+      padding: 11px;
+      border-radius: 8px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       border: 1px solid #2ea043;
       background: #238636;
       color: #fff;
       cursor: pointer;
       font-family: 'Inter', system-ui, sans-serif;
-      transition: background 0.15s;
+      transition: background 0.15s, box-shadow 0.15s;
+      letter-spacing: 0.01em;
     }
-    .btn-submit:hover { background: #2ea043; }
+    .btn-submit:hover {
+      background: #2ea043;
+      box-shadow: 0 4px 16px #23863640;
+    }
 
     /* FOOTER */
     .panel-footer {
-      margin-top: 20px;
-      padding-top: 20px;
+      margin-top: 22px;
+      padding-top: 18px;
       border-top: 1px solid #21262d;
       text-align: center;
       font-size: 13px;
@@ -167,82 +318,160 @@
       cursor: pointer;
       font-size: 13px;
       font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 500;
       padding: 0;
+      margin-left: 4px;
+      transition: color 0.15s;
     }
-    .panel-footer button:hover { color: #79c0ff; text-decoration: underline; }
+    .panel-footer button:hover { color: #79c0ff; }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+    .tab {
+      flex: 1;
+      padding: 7px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      color: #7d8590;
+      background: none;
+      border: none;
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      background: #21262d;
+      color: #e6edf3;
+    }
   </style>
 </head>
 <body>
 
-<div class="auth-wrapper">
+<!-- Background glow -->
+<div class="bg-glow">
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+</div>
 
-  <div class="logo">
-    <div class="logo-icon">S</div>
-    <span class="logo-name">Skemap</span>
+<div class="card">
+
+  <!-- LEFT: branding -->
+  <div class="left">
+    <div class="brand">
+      <div class="brand-logo">
+        <div class="logo-icon">S</div>
+        <span class="logo-name">Skemap</span>
+      </div>
+      <div class="brand-headline">
+        Organiza tus<br/>proyectos<br/><span>sin ruido.</span>
+      </div>
+      <div class="brand-sub">
+        Estructura tus ideas en proyectos, épicas y tareas. Simple, rápido, tuyo.
+      </div>
+    </div>
+
+    <div class="brand-features">
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        Proyectos con épicas y tareas
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        Progreso visual en tiempo real
+      </div>
+      <div class="feature-item">
+        <div class="feature-dot"></div>
+        Prioridades, estados y fechas
+      </div>
+    </div>
   </div>
 
-  <div class="card">
-    <div class="slider" id="slider">
+  <!-- RIGHT: form -->
+  <div class="right">
+    <div class="form-area">
 
-      <!-- LOGIN -->
-      <div class="panel">
-        <div class="panel-title">Bienvenido de vuelta</div>
-        <div class="panel-sub">Inicia sesión para continuar.</div>
-
-        <div class="error-msg" id="loginError">Correo o contraseña incorrectos.</div>
-
-        <div class="fields">
-          <div class="field">
-            <label>Correo</label>
-            <input type="email" placeholder="tu@email.com" />
-          </div>
-          <div class="field">
-            <label>Contraseña</label>
-            <input type="password" placeholder="••••••••" />
-          </div>
-        </div>
-
-        <button class="btn-submit" onclick="showError('loginError')">Iniciar sesión</button>
-
-        <div class="panel-footer">
-          ¿No tienes cuenta?
-          <button onclick="goTo('signup')">Regístrate aquí</button>
-        </div>
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" id="tab-login" onclick="goTo('login')">Iniciar sesión</button>
+        <button class="tab" id="tab-signup" onclick="goTo('signup')">Crear cuenta</button>
       </div>
 
-      <!-- SIGNUP -->
-      <div class="panel">
-        <div class="panel-title">Crear cuenta</div>
-        <div class="panel-sub">Empieza a organizar tus proyectos.</div>
+      <div class="slider-wrap">
+        <div class="slider" id="slider">
 
-        <div class="error-msg" id="signupError">El correo ya está en uso.</div>
+          <!-- LOGIN -->
+          <div class="panel">
+            <div class="panel-title">Bienvenido de vuelta</div>
+            <div class="panel-sub">Continúa donde lo dejaste.</div>
 
-        <div class="fields">
-          <div class="field-row">
-            <div class="field">
-              <label>Nombre</label>
-              <input type="text" placeholder="Diego" />
+            <div class="error-msg" id="loginError">Correo o contraseña incorrectos.</div>
+
+            <div class="fields">
+              <div class="field">
+                <label>Correo</label>
+                <input type="email" placeholder="tu@email.com" />
+              </div>
+              <div class="field">
+                <label>Contraseña</label>
+                <input type="password" placeholder="••••••••" />
+              </div>
             </div>
-            <div class="field">
-              <label>Usuario</label>
-              <input type="text" placeholder="diegodev" />
+
+            <button class="btn-submit" onclick="showError('loginError')">Iniciar sesión</button>
+
+            <div class="panel-footer">
+              ¿No tienes cuenta?
+              <button onclick="goTo('signup')">Regístrate</button>
             </div>
           </div>
-          <div class="field">
-            <label>Correo</label>
-            <input type="email" placeholder="tu@email.com" />
-          </div>
-          <div class="field">
-            <label>Contraseña</label>
-            <input type="password" placeholder="••••••••" />
-          </div>
-        </div>
 
-        <button class="btn-submit" onclick="showError('signupError')">Crear cuenta</button>
+          <!-- SIGNUP -->
+          <div class="panel">
+            <div class="panel-title">Crear cuenta</div>
+            <div class="panel-sub">Empieza hoy, gratis.</div>
 
-        <div class="panel-footer">
-          ¿Ya tienes cuenta?
-          <button onclick="goTo('login')">Inicia sesión aquí</button>
+            <div class="error-msg" id="signupError">El correo ya está en uso.</div>
+
+            <div class="fields">
+              <div class="field-row">
+                <div class="field">
+                  <label>Nombre</label>
+                  <input type="text" placeholder="Diego" />
+                </div>
+                <div class="field">
+                  <label>Usuario</label>
+                  <input type="text" placeholder="diegodev" />
+                </div>
+              </div>
+              <div class="field">
+                <label>Correo</label>
+                <input type="email" placeholder="tu@email.com" />
+              </div>
+              <div class="field">
+                <label>Contraseña</label>
+                <input type="password" placeholder="••••••••" />
+              </div>
+            </div>
+
+            <button class="btn-submit" onclick="showError('signupError')">Crear cuenta</button>
+
+            <div class="panel-footer">
+              ¿Ya tienes cuenta?
+              <button onclick="goTo('login')">Inicia sesión</button>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -253,7 +482,10 @@
 
 <script>
   function goTo(view) {
-    document.getElementById('slider').classList.toggle('show-signup', view === 'signup');
+    const isSignup = view === 'signup';
+    document.getElementById('slider').classList.toggle('show-signup', isSignup);
+    document.getElementById('tab-login').classList.toggle('active', !isSignup);
+    document.getElementById('tab-signup').classList.toggle('active', isSignup);
   }
 
   function showError(id) {
