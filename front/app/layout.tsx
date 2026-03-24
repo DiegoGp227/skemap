@@ -30,7 +30,7 @@ export default function RootLayout({
       >
         <SWRProvider>
           <Header />
-          <div className="max-w-screen-2xl mx-auto flex-1 w-full">
+          <div className="max-w-screen-2xl mx-auto flex-1 w-full flex flex-col">
             {children}
           </div>
         </SWRProvider>
