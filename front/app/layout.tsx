@@ -1,12 +1,18 @@
 import "../style/globals.css";
 import type { Metadata } from "next";
-import { Assistant } from "next/font/google";
+import { Assistant, Manrope } from "next/font/google";
 import { SWRProvider } from "@/provider/StoreProvider";
 import Header from "./components/molecules/Header";
 
 const assistant = Assistant({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
   variable: "--font-assistant",
+  subsets: ["latin"],
+});
+
+const manrope = Manrope({
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -26,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${assistant.variable} antialiased  w-full min-h-screen flex flex-col bg-base text-fg`}
+        className={`${assistant.variable} ${manrope.variable} antialiased  w-full min-h-screen flex flex-col bg-base text-fg`}
       >
         <SWRProvider>
           <Header />
