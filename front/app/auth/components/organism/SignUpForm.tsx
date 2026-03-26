@@ -8,38 +8,46 @@ export default function SignUpForm() {
   } = useForm();
 
   return (
-    <form action="" className="flex justify-center flex-col w-full">
-      <div className="flex w-full gap-2">
+    <form action="" className="flex justify-center flex-col w-full gap-5">
+      <div className="flex w-full gap-5">
         <div className="flex flex-col flex-1 min-w-0">
-          <label htmlFor="name">Name</label>
+          <label htmlFor="name" className="text-fg-muted">Name</label>
           <input
             id="name"
             type="text"
             className="w-full border-2 border-border px-1 py-2 rounded focus:outline-none focus:border-blue-600 transition-all duration-500"
+            {...register("name")}
           />
         </div>
 
         <div className="flex flex-col flex-1 min-w-0">
-          <label htmlFor="user">UserName</label>
+          <label htmlFor="userName" className="text-fg-muted">
+            UserName
+          </label>
           <input
-            id="user"
+            id="userName"
             type="text"
             className="w-full border-2 border-border px-1 py-2 rounded focus:outline-none focus:border-blue-600 transition-all duration-500"
+            {...register("username")}
           />
         </div>
       </div>
       <div className="flex flex-col">
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email" className="text-fg-muted">
+          Email
+        </label>
         <input
-          type="text"
+          type="email"
           className="border-2 border-border px-1 py-2 rounded focus:outline-none focus:border-blue-600 transition-all duration-500"
+          {...register("email")}
         />
       </div>
       <div className="flex flex-col">
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password" className="text-fg-muted">Password</label>
         <input
           type="password"
           className="border-2 border-border px-1 py-2 rounded focus:outline-none focus:border-blue-600 transition-all duration-500"
+          {...register("password")}
         />
       </div>
       <button
