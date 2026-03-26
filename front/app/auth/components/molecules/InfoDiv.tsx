@@ -15,7 +15,7 @@ export default function InfoSection() {
       />
 
       <div className="relative z-10">
-        <Image src={Logo} alt="Logo Skemap" width={180} priority />
+        <Image src={Logo} alt="Logo Skemap" width={240} priority />
       </div>
 
       <div className="relative z-10 space-y-4">

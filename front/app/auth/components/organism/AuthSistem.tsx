@@ -1,6 +1,6 @@
 export default function AuthSistem() {
     return (
-        <div>
+        <div className="bg-base">
             
         </div>
     )
