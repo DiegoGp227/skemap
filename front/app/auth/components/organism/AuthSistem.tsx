@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import SelectAuthSistem from "../molecules/SelectSistem";
+import LoginForm from "./LoginForm";
 
 export default function AuthSistem() {
   const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -12,7 +13,7 @@ export default function AuthSistem() {
         <SelectAuthSistem isLogin={isLogin} setIsLogin={setIsLogin}/>
       </div>
       <div className="text-shadow-priority-medium">
-        {isLogin ? <div>login</div> : <div>register</div>}
+        {isLogin ? <LoginForm /> : <div>register</div>}
       </div>
     </div>
   );
