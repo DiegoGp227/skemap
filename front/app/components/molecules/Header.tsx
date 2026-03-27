@@ -3,7 +3,7 @@ import { User } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="w-full h-16 flex justify-center bg-base">
+    <header className="w-full h-16 flex justify-center bg-base/60 backdrop-blur-md border-b border-border sticky top-0 z-50">
       <div className="w-full max-w-7xl flex items-center justify-between px-4">
         <div className="items-center justify-center">
           <Image
