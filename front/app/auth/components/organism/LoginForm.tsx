@@ -1,6 +1,6 @@
 import { useLogin } from "@/src/auth/hooks/useLogin";
 import { ICredentials } from "@/src/auth/types/auth.types";
-import { div } from "framer-motion/client";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 export default function LoginForm() {
@@ -11,9 +11,19 @@ export default function LoginForm() {
   } = useForm<ICredentials>();
   const { error, loading, login } = useLogin();
 
+  const router = useRouter();
+
+  const onSubmit = async (data: ICredentials) => {
+    const success = await login(data);
+
+    if (success) {
+      router.push("/");
+    }
+  };
+
   return (
     <form
-      onSubmit={handleSubmit(login)}
+      onSubmit={handleSubmit(onSubmit)}
       className="flex justify-center flex-col gap-6"
     >
       <div className="flex flex-col">
@@ -25,6 +35,7 @@ export default function LoginForm() {
           id="email"
           {...register("email")}
           className="border-2 border-border px-1 py-2 rounded focus:outline-none focus:border-blue-600 transition-all duration-500"
+          disabled={loading}
         />
       </div>
       {errors.email && (
@@ -40,6 +51,7 @@ export default function LoginForm() {
           id="password"
           {...register("password")}
           className="border-2 border-border px-1 py-2 rounded focus:outline-none focus:border-blue-600 transition-all duration-500"
+          disabled={loading}
         />
       </div>
       {errors.password && (
@@ -53,7 +65,7 @@ export default function LoginForm() {
         className="border-2 border-border px-1 py-2 bg-blue-600 hover:bg-blue-700 transition-all duration-500"
         disabled={loading}
       >
-        Send
+        {loading ? "loading..." : "send"}
       </button>
     </form>
   );
