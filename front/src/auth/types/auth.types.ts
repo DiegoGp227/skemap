@@ -7,8 +7,6 @@ export interface ICreateUserRequest {
   email: string;
   password: string;
   username: string;
-  cutoffDay: number;
-  currency: string;
   name: string;
 }
 
@@ -29,4 +27,10 @@ export interface IAuthResponse {
   message: string;
   token: string;
   userInfo: IUserInfo;
+}
+
+export interface LoginState {
+  user: IUserInfo | null;
+  loading: boolean;
+  error: string | null;
 }
