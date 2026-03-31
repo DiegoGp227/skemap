@@ -10,13 +10,12 @@ export function useLogin() {
     error: null,
   });
 
-  const login = useCallback(async (payload: ICredentials): Promise<boolean> => {
+  const login = useCallback(async (payload: ICredentials) => {
     setState({ user: null, loading: true, error: null });
     try {
       const user = await loginService(payload);
       localStorage.setItem("token", user.token);
       setState({ user: user.userInfo, loading: false, error: null });
-      return true;
     } catch (err) {
       const axiosError = err as AxiosError<{ code: string }>;
       setState({
@@ -24,7 +23,6 @@ export function useLogin() {
         loading: false,
         error: axiosError.response?.data?.code ?? "UNKNOWN_ERROR",
       });
-      return false;
     }
   }, []);
 

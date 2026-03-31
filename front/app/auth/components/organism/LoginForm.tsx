@@ -1,6 +1,7 @@
 import { useLogin } from "@/src/auth/hooks/useLogin";
 import { ICredentials } from "@/src/auth/types/auth.types";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 export default function LoginForm() {
@@ -9,21 +10,17 @@ export default function LoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<ICredentials>();
-  const { error, loading, login } = useLogin();
+  const { user, error, loading, login } = useLogin();
 
   const router = useRouter();
 
-  const onSubmit = async (data: ICredentials) => {
-    const success = await login(data);
-
-    if (success) {
-      router.push("/");
-    }
-  };
+  useEffect(() => {
+    if (user) router.push("/");
+  }, [user]);
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(login)}
       className="flex justify-center flex-col gap-6"
     >
       <div className="flex flex-col">

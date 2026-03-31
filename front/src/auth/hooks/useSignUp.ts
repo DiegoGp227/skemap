@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { ICreateUserRequest, LoginState } from "../types/auth.types";
 import { SignUpService } from "../services/auth.services";
+import { AxiosError } from "axios";
 
 export function useSignUp() {
   const [state, setState] = useState<LoginState>({
@@ -15,14 +16,13 @@ export function useSignUp() {
       const user = await SignUpService(payload);
       localStorage.setItem("token", user.token);
       setState({ user: user.userInfo, loading: false, error: null });
-      return true;
-    } catch (err: any) {
+    } catch (err) {
+      const axiosError = err as AxiosError<{ code: string }>;
       setState({
         user: null,
         loading: false,
-        error: err.response?.data?.code || "UNKNOWN_ERROR",
+        error: axiosError.response?.data?.code ?? "UNKNOWN_ERROR",
       });
-      return false;
     }
   }, []);
 

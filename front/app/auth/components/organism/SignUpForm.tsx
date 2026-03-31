@@ -1,6 +1,7 @@
 import { useSignUp } from "@/src/auth/hooks/useSignUp";
 import { ICreateUserRequest } from "@/src/auth/types/auth.types";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 export default function SignUpForm() {
@@ -10,23 +11,19 @@ export default function SignUpForm() {
     formState: { errors },
   } = useForm<ICreateUserRequest>();
 
-  const { error, loading, signup } = useSignUp();
+  const { user, error, loading, signup } = useSignUp();
 
   const router = useRouter();
 
-  const onSubmit = async (data: ICreateUserRequest) => {
-    const success = await signup(data);
-
-    if (success) {
-      router.push("/");
-    }
-  };
+  useEffect(() => {
+    if (user) router.push("/");
+  }, [user]);
 
   return (
     <form
       action=""
       className="flex justify-center flex-col w-full gap-5"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(signup)}
     >
       <div className="flex w-full gap-5">
         <div className="flex flex-col flex-1 min-w-0">
