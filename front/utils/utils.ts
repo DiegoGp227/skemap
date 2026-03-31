@@ -1,5 +1,5 @@
 
-import apiClient from "@/shared/services/apiClient";
+import apiClient from "@/src/shared/services/apiClient";
 import { AxiosError } from "axios";
 
 export const fetcher = async <T>(url: string): Promise<T> => {
