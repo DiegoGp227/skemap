@@ -1,13 +1,7 @@
-// hooks/useLogin.ts
 import { useState, useCallback } from "react";
-import { ICredentials, IUserInfo } from "../types/auth.types";
+import { ICredentials, LoginState } from "../types/auth.types";
 import { loginService } from "../services/auth.services";
-
-interface LoginState {
-  user: IUserInfo | null;
-  loading: boolean;
-  error: string | null;
-}
+import { AxiosError } from "axios";
 
 export function useLogin() {
   const [state, setState] = useState<LoginState>({
@@ -16,21 +10,23 @@ export function useLogin() {
     error: null,
   });
 
-  const login = useCallback(async (payload: ICredentials) => {
+  const login = useCallback(async (payload: ICredentials): Promise<boolean> => {
     setState({ user: null, loading: true, error: null });
     try {
       const user = await loginService(payload);
       localStorage.setItem("token", user.token);
       setState({ user: user.userInfo, loading: false, error: null });
+      return true;
     } catch (err) {
-      setState({ user: null, loading: false, error: (err as Error).message });
+      const axiosError = err as AxiosError<{ code: string }>;
+      setState({
+        user: null,
+        loading: false,
+        error: axiosError.response?.data?.code ?? "UNKNOWN_ERROR",
+      });
+      return false;
     }
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem("token");
-    setState({ user: null, loading: false, error: null });
-  }, []);
-
-  return { ...state, login, logout };
+  return { ...state, login };
 }
