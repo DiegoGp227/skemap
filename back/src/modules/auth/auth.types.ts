@@ -13,3 +13,8 @@ export interface IUserResponse {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IAuthUser {
+  email: string;
+  password: string;
+}
