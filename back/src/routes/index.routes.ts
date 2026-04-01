@@ -1,7 +1,8 @@
 import { Router } from "express";
 import dbCheck from "../modules/test/test.js";
 import { login, signup } from "../modules/auth/auth.controllers.js";
-import { getProjects } from "../modules/projects/projects.controllers.js";
+import { getProjects, getProject } from "../modules/projects/projects.controllers.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 export const router: Router = Router();
 
@@ -13,4 +14,5 @@ router.post("/signup", signup);
 router.post("/login", login);
 
 // Projects Routes
-router.get("/projects", getProjects);
+router.get("/projects", authMiddleware, getProjects);
+router.get("/projects/:id", authMiddleware, getProject);
