@@ -1,12 +1,16 @@
 import { Router } from "express";
 import dbCheck from "../modules/test/test.js";
 import { login, signup } from "../modules/auth/auth.controllers.js";
+import { getProjects } from "../modules/projects/projects.controllers.js";
 
 export const router: Router = Router();
 
-// Test routes
+// Test Routes
 router.get("/db", dbCheck);
 
-// auth routes
+// Auth Routes
 router.post("/signup", signup);
 router.post("/login", login);
+
+// Projects Routes
+router.get("/projects", getProjects);
