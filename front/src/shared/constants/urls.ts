@@ -4,4 +4,6 @@ export const BaseURL =
 //AUTH
 export const LoginURL = new URL("login", BaseURL);
 
-export const SignUp = new URL("signup", BaseURL);
+export const SignUpURL = new URL("signup", BaseURL);
+
+export const projectsURL = new URL("projects", BaseURL);
