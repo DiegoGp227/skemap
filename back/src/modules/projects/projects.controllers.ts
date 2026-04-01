@@ -1,42 +1,58 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import { AppError, InternalServerError, UnauthorizedError } from "../../errors/appError";
-import { getProjectsByUser } from "./projects.services";
+import { AppError, InternalServerError, NotFoundError } from "../../errors/appError";
+import { getProjectsByUser, getProjectById } from "./projects.services";
+
+// El middleware de auth ya verificó el token antes de llegar aquí.
+// req.user está garantizado en todas estas rutas.
 
 /**
  * @route   GET /projects
  * @headers Authorization: Bearer <token>
- * @access  Private (requiere autenticación)
+ * @access  Private
  * @returns { projects: Project[] }
  */
 export const getProjects = async (req: Request, res: Response): Promise<void> => {
   try {
-    const authHeader = req.headers.authorization;
+    const projects = await getProjectsByUser(req.user!.id);
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw new UnauthorizedError("No token provided");
-    }
-
-    const token = authHeader.split(" ")[1];
-
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "default_secret",
-    ) as { id: string; email: string };
-
-    const projects = await getProjectsByUser(decoded.id);
-
-    res.status(200).json({
-      projects,
-    });
+    res.status(200).json({ projects });
   } catch (error) {
     console.error("❌ Error in getProjects:", error);
 
-    if (error instanceof jwt.JsonWebTokenError) {
-      const unauthorized = new UnauthorizedError("Invalid or expired token");
-      res.status(unauthorized.statusCode).json(unauthorized.toJSON());
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json(error.toJSON());
       return;
     }
+
+    const internalError = new InternalServerError("Internal server error");
+    res.status(internalError.statusCode).json(internalError.toJSON());
+  }
+};
+
+/**
+ * @route   GET /projects/:id
+ * @headers Authorization: Bearer <token>
+ * @params  id — ID del proyecto
+ * @access  Private
+ * @returns { project }
+ */
+export const getProject = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const projectId = parseInt(req.params.id as string);
+
+    if (isNaN(projectId)) {
+      throw new NotFoundError("Project");
+    }
+
+    const project = await getProjectById(projectId, req.user!.id);
+
+    if (!project) {
+      throw new NotFoundError("Project");
+    }
+
+    res.status(200).json({ project });
+  } catch (error) {
+    console.error("❌ Error in getProject:", error);
 
     if (error instanceof AppError) {
       res.status(error.statusCode).json(error.toJSON());
