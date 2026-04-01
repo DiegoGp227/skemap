@@ -54,3 +54,5 @@ Thumbs.db
 out/
 next-env.d.ts
 /generated/prisma
+
+docs/code-review-auth.md
