@@ -4,7 +4,7 @@ import {
   ICreateUserRequest,
   ICredentials,
 } from "../types/auth.types";
-import { LoginURL, SignUp } from "@/src/shared/constants/urls";
+import { LoginURL, SignUpURL } from "@/src/shared/constants/urls";
 
 export function loginService(
   credentials: ICredentials,
@@ -20,7 +20,7 @@ export function loginService(
 export function SignUpService(
   credentials: ICreateUserRequest,
 ): Promise<IAuthResponse> {
-  const url = SignUp.toString();
+  const url = SignUpURL.toString();
   const response = postFetcher<IAuthResponse>(url, {
     email: credentials.email,
     password: credentials.password,
