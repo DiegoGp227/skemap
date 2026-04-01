@@ -1,71 +1,62 @@
 "use client";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type FormValues = {
   search: string;
-  category: string;
 };
 
-export default function FilterForm() {
-  const { register, setValue, watch } = useForm<FormValues>({
-    defaultValues: {
-      search: "",
-      category: "",
-    },
+interface IFilterFormProps {
+  onFilterStatus: (status: string) => void;
+  onFilterSearch: (search: string) => void;
+}
+
+export default function FilterForm({
+  onFilterStatus,
+  onFilterSearch,
+}: IFilterFormProps) {
+  const { register, watch } = useForm<FormValues>({
+    defaultValues: { search: "" },
   });
 
-  const values = watch();
+  const searchValue = watch("search");
 
-  const handleCategoryClick = (category: string) => {
-    setValue("category", category);
-  };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onFilterSearch(searchValue);
+    }, 300);
 
-  const data = [
-    { id: 1, name: "Laptop", category: "tech" },
-    { id: 2, name: "Manzana", category: "food" },
-    { id: 3, name: "Audífonos", category: "tech" },
-  ];
-
-  const filtered = data.filter((item) => {
-    const matchSearch = item.name
-      .toLowerCase()
-      .includes(values.search.toLowerCase());
-
-    const matchCategory = values.category
-      ? item.category === values.category
-      : true;
-
-    return matchSearch && matchCategory;
-  });
+    return () => clearTimeout(timer);
+  }, [searchValue, onFilterSearch]);
 
   return (
     <form className="flex w-full justify-between gap-5">
       <input
         placeholder="search Project..."
         {...register("search")}
-        className="w-full p-2 border-2 border-border rounded focus:border-ring focus:outline-none" 
+        className="w-full p-2 border-2 border-border rounded focus:border-ring focus:outline-none"
       />
 
       <div className="flex gap-5">
         <button
           type="button"
-          onClick={() => handleCategoryClick("all")}
-          className="px-3 py-1.5 border-2 border-border rounded  focus:bg-[#21262d] transition-all duration-500"
+          onClick={() => onFilterStatus("all")}
+          className="px-3 py-1.5 border-2 border-border rounded focus:bg-[#21262d] transition-all duration-500"
         >
           All
         </button>
 
         <button
           type="button"
-          onClick={() => handleCategoryClick("active")}
-          className="px-3 py-1.5 border-2 border-border rounded  focus:bg-[#21262d] transition-all duration-500"
+          onClick={() => onFilterStatus("active")}
+          className="px-3 py-1.5 border-2 border-border rounded focus:bg-[#21262d] transition-all duration-500"
         >
           Active
         </button>
 
         <button
           type="button"
-          onClick={() => handleCategoryClick("complete")}
+          onClick={() => onFilterStatus("complete")}
           className="px-3 py-1.5 border-2 border-border rounded focus:bg-[#21262d] transition-all duration-500"
         >
           Complete
@@ -73,18 +64,12 @@ export default function FilterForm() {
 
         <button
           type="button"
-          onClick={() => handleCategoryClick("filed")}
+          onClick={() => onFilterStatus("filed")}
           className="px-3 py-1.5 border-2 border-border rounded focus:bg-[#21262d] transition-all duration-500"
         >
-          filed
+          Filed
         </button>
       </div>
-
-      {/* <ul>
-        {filtered.map(item => (
-          <li key={item.id}>{item.name}</li>
-        ))}
-      </ul> */}
     </form>
   );
 }
