@@ -3,9 +3,13 @@ import { useForm } from "react-hook-form";
 
 interface INewProjectFormProps {
   onClose: () => void;
+  isNewProject: boolean;
 }
 
-export default function NewProjectForm({ onClose }: INewProjectFormProps) {
+export default function NewProjectForm({
+  onClose,
+  isNewProject,
+}: INewProjectFormProps) {
   const { handleSubmit, register } = useForm();
 
   return (
@@ -18,7 +22,7 @@ export default function NewProjectForm({ onClose }: INewProjectFormProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-fg text-lg font-semibold">New Project</h2>
+          <h2 className="text-fg text-lg font-semibold">{isNewProject ? "New Project" : "Update Project"}</h2>
           <button
             onClick={onClose}
             className="text-fg-muted hover:text-fg cursor-pointer p-1 hover:bg-overlay rounded transition-colors duration-200"
