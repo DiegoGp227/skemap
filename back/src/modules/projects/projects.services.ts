@@ -1,23 +1,33 @@
+import { ProjectStatus } from "@prisma/client";
 import prisma from "../../db/prisma.js";
 import { ConflictError, NotFoundError } from "../../errors/appError.js";
 import { CreateProjectInput, UpdateProjectInput } from "./projects.types.js";
 
 /**
- * @param userId - ID del usuario extraído del token JWT (llega como string)
- * @returns Array de proyectos con sus campos básicos
+ * @param userId - ID del usuario autenticado
+ * @param status - Enum de Prisma ya traducido por el controller (ACTIVE, COMPLETED, ARCHIVED)
+ * @param search - Texto a buscar en el nombre del proyecto
+ * @returns Array de proyectos que cumplen los filtros
  */
-
-export const getProjectsByUser = async (userId: number) => {
-  // prisma.project.findMany busca múltiples registros que cumplan el filtro.
-  // `where` es el equivalente al WHERE de SQL.
+export const getProjectsByUser = async (
+  userId: number,
+  status?: ProjectStatus,
+  search?: string,
+) => {
   const projects = await prisma.project.findMany({
     where: {
-      ownerId: userId, // equivale a WHERE "ownerId" = $1
-    },
+      ownerId: userId,
 
-    // `select` define exactamente qué campos traer de la BD.
-    // Buena práctica: nunca traer más datos de los necesarios.
-    // Si omites `select`, Prisma trae todos los campos del modelo.
+      // Si status tiene valor lo usamos directamente, ya viene traducido.
+      // Si es undefined (caso "all" o sin param), no se agrega al WHERE.
+      ...(status && { status }),
+
+      // contains + mode insensitive = ILIKE '%search%' en SQL.
+      // Solo se aplica si search tiene valor.
+      ...(search && {
+        name: { contains: search, mode: "insensitive" },
+      }),
+    },
     select: {
       id: true,
       name: true,
@@ -27,8 +37,6 @@ export const getProjectsByUser = async (userId: number) => {
       createdAt: true,
       updatedAt: true,
     },
-
-    // `orderBy` ordena los resultados. Aquí los más recientes primero.
     orderBy: {
       createdAt: "desc",
     },
