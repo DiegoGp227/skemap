@@ -1,24 +1,31 @@
 import TecnologiesPills from "../atoms/TecnologiesPills";
 import ProgressBar from "./ProgressBar";
 
-export default function ProjectDiv() {
+interface IProjectDivProps {
+  title: string;
+  description?: string;
+  status: string;
+}
+
+export default function ProjectDiv({
+  title,
+  description,
+  status,
+}: IProjectDivProps) {
   return (
     <div className="w-100 p-5 border-2 bg-surface border-border rounded transition duration-500 ease-in-out hover:-translate-y-1 hover:border-ring flex flex-col gap-5">
       <div className="flex gap-2">
         <div>
           <div>
-            <h3 className="text-2xl font-bold">Taskly</h3>
+            <h3 className="text-2xl font-bold">{title}</h3>
           </div>
           <div>
-            <p className="text-fg-secondary">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias
-              eum officiis adipisci soluta quasi, nulla magni provident dolore
-            </p>
+            <p className="text-fg-secondary">{description}</p>
           </div>
         </div>
         <div>
           <div className="bg-[#1a3327] py-1 px-3 rounded text-success">
-            <p>Active</p>
+            <p>{status}</p>
           </div>
         </div>
       </div>
