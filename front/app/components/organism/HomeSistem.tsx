@@ -26,7 +26,10 @@ export default function HomeSistem() {
         setNewProjectForm={setNewProjectForm}
       />
       {newProjectForm && (
-        <NewProjectForm onClose={() => setNewProjectForm(false)} />
+        <NewProjectForm
+          onClose={() => setNewProjectForm(false)}
+          isNewProject={true}
+        />
       )}
     </>
   );
