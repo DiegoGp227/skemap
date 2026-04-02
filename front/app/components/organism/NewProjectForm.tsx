@@ -16,7 +16,6 @@ export default function NewProjectForm({ onClose }: INewProjectFormProps) {
       <div
         className="w-96 bg-surface border border-border rounded-lg p-6 flex flex-col gap-5"
         onClick={(e) => e.stopPropagation()}
-        
       >
         <div className="flex items-center justify-between">
           <h2 className="text-fg text-lg font-semibold">New Project</h2>
@@ -29,7 +28,6 @@ export default function NewProjectForm({ onClose }: INewProjectFormProps) {
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit(() => {})} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label htmlFor="projectName" className="text-fg-muted text-sm">
@@ -39,6 +37,7 @@ export default function NewProjectForm({ onClose }: INewProjectFormProps) {
               type="text"
               id="projectName"
               className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
+              {...register("name")}
             />
           </div>
 
@@ -51,6 +50,7 @@ export default function NewProjectForm({ onClose }: INewProjectFormProps) {
               id="color"
               defaultValue="#388bfd"
               className="w-full h-10 rounded border border-border bg-overlay cursor-pointer px-1 py-1"
+              {...register("color")}
             />
           </div>
 
@@ -62,6 +62,7 @@ export default function NewProjectForm({ onClose }: INewProjectFormProps) {
               type="text"
               id="description"
               className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
+              {...register("description")}
             />
           </div>
 
