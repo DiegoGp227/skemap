@@ -1,6 +1,6 @@
 export type ProjectStatus = "ACTIVE" | "COMPLETED" | "ARCHIVED";
 
-export type ProjectColor = string; // hex color, e.g. "#ff5733"
+export type ProjectColor = string; 
 
 export interface Project {
   id: number;
