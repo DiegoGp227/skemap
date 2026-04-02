@@ -5,12 +5,14 @@ interface IProjectsSectionsProps {
   projects: Project[];
   loading: boolean;
   error: string | null;
+  setNewProjectForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ProjectsSection({
   loading,
   projects,
   error,
+  setNewProjectForm,
 }: IProjectsSectionsProps) {
   return (
     <div className="flex gap-15 flex-wrap justify-center">
@@ -31,7 +33,7 @@ export default function ProjectsSection({
           <button
             className="bg-blue-600 py-2 px-10 cursor-pointer rounded"
             onClick={() => {
-              alert("hello");
+              setNewProjectForm(true);
             }}
           >
             New Project
