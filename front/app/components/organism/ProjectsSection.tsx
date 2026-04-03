@@ -34,6 +34,7 @@ export default function ProjectsSection({
             {projects.map((project) => (
               <ProjectDiv
                 key={project.id}
+                id={project.id}
                 status={project.status}
                 description={project.description}
                 title={project.name}
