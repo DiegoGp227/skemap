@@ -4,20 +4,14 @@ import { AxiosError } from "axios";
 
 export const fetcher = async <T>(url: string): Promise<T> => {
   try {
-    const response = await apiClient.get<T>(url); 
-    return response.data; 
-  } catch (error: unknown) {
-    const status = (error as AxiosError).response?.status || "unknown";
-    const errorMessage = `An error occurred while fetching the data from ${url} with status ${status}`;
-
-    const errorDetails =
-      (error as AxiosError).response?.data || "No additional error information";
-
-    const customError = new Error(errorMessage) as Error & {
-      details?: unknown;
-    };
-    customError.details = errorDetails;
-    throw customError;
+    const response = await apiClient.get<T>(url);
+    return response.data;
+  } catch (error) {
+    // Mismo comportamiento que el resto de fetchers: relanzamos el AxiosError
+    // para que el consumidor pueda leer error.response.data de forma consistente
+    const axiosError = error as AxiosError;
+    console.error(`Error in fetcher for ${url}:`, axiosError);
+    throw axiosError;
   }
 };
 
