@@ -10,8 +10,6 @@ export default function HomeSistem() {
   const [search, setSearch] = useState<string>("");
   const [newProjectForm, setNewProjectForm] = useState<boolean>(false);
 
-  // Pasamos los filtros directamente al hook. SWR re-fetcha solo cuando cambian,
-  // por lo que ya no necesitamos el useEffect manual que teníamos antes.
   const { error, loading, projects } = useProjects(status, search);
 
   return (
