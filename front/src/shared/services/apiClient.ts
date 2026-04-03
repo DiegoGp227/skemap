@@ -17,10 +17,16 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor para manejar errores globalmente
+// Interceptor para manejar errores globalmente.
+// Si el servidor responde 401, el token expiró o es inválido:
+// limpiamos la sesión y redirigimos al login automáticamente.
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
     console.error("API Error:", error);
     return Promise.reject(error);
   }
