@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { ICreateUserRequest, LoginState } from "../types/auth.types";
 import { SignUpService } from "../services/auth.services";
+import { useAppStoreActions } from "@/store/hooks";
 import { AxiosError } from "axios";
 
 export function useSignUp() {
@@ -10,12 +11,22 @@ export function useSignUp() {
     error: null,
   });
 
+  // Mismo patrón que useLogin: persistimos en el store global para
+  // que la sesión sobreviva navegación y recarga de página
+  const setAuth = useAppStoreActions((actions) => actions.auth.setAuth);
+
   const signup = useCallback(async (payload: ICreateUserRequest) => {
     setState({ user: null, loading: true, error: null });
     try {
-      const user = await SignUpService(payload);
-      localStorage.setItem("token", user.token);
-      setState({ user: user.userInfo, loading: false, error: null });
+      const response = await SignUpService(payload);
+
+      // Persistimos token + userInfo en el store (easy-peasy lo sincroniza con localStorage)
+      setAuth(response);
+
+      // Token separado para que el interceptor de apiClient lo lea directamente
+      localStorage.setItem("token", response.token);
+
+      setState({ user: response.userInfo, loading: false, error: null });
     } catch (err) {
       const axiosError = err as AxiosError<{ code: string }>;
       setState({
@@ -24,7 +35,7 @@ export function useSignUp() {
         error: axiosError.response?.data?.code ?? "UNKNOWN_ERROR",
       });
     }
-  }, []);
+  }, [setAuth]);
 
   return { ...state, signup };
 }
