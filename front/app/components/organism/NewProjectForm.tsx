@@ -1,3 +1,5 @@
+import useCreateProject from "@/src/home/hooks/useCreateProject";
+import { CreateProjectDto } from "@/src/home/types/home.types";
 import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 
@@ -10,7 +12,18 @@ export default function NewProjectForm({
   onClose,
   isNewProject,
 }: INewProjectFormProps) {
-  const { handleSubmit, register } = useForm();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<CreateProjectDto>();
+  const { error, handleCreateProject } = useCreateProject();
+
+  const onSubmit = async (dto: CreateProjectDto) => {
+    const success = await handleCreateProject(dto);
+
+    if (success) onClose();
+  };
 
   return (
     <div
@@ -22,7 +35,9 @@ export default function NewProjectForm({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-fg text-lg font-semibold">{isNewProject ? "New Project" : "Update Project"}</h2>
+          <h2 className="text-fg text-lg font-semibold">
+            {isNewProject ? "New Project" : "Update Project"}
+          </h2>
           <button
             onClick={onClose}
             className="text-fg-muted hover:text-fg cursor-pointer p-1 hover:bg-overlay rounded transition-colors duration-200"
@@ -32,7 +47,7 @@ export default function NewProjectForm({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(() => {})} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <label htmlFor="projectName" className="text-fg-muted text-sm">
               Name
@@ -44,6 +59,9 @@ export default function NewProjectForm({
               {...register("name")}
             />
           </div>
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
 
           <div className="flex flex-col gap-1">
             <label htmlFor="color" className="text-fg-muted text-sm">
@@ -57,6 +75,9 @@ export default function NewProjectForm({
               {...register("color")}
             />
           </div>
+          {errors.color && (
+            <p className="text-red-500 text-sm">{errors.color.message}</p>
+          )}
 
           <div className="flex flex-col gap-1">
             <label htmlFor="description" className="text-fg-muted text-sm">
@@ -69,6 +90,11 @@ export default function NewProjectForm({
               {...register("description")}
             />
           </div>
+          {errors.description && (
+            <p className="text-red-500 text-sm">{errors.description.message}</p>
+          )}
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           <button
             type="submit"
