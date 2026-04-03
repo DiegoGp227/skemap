@@ -48,7 +48,7 @@ export default function FilterForm({
 
         <button
           type="button"
-          onClick={() => onFilterStatus("active")}
+          onClick={() => onFilterStatus("ACTIVE")}
           className="px-3 py-1.5 border-2 border-border rounded focus:bg-[#21262d] transition-all duration-500"
         >
           Active
@@ -56,7 +56,7 @@ export default function FilterForm({
 
         <button
           type="button"
-          onClick={() => onFilterStatus("complete")}
+          onClick={() => onFilterStatus("COMPLETED")}
           className="px-3 py-1.5 border-2 border-border rounded focus:bg-[#21262d] transition-all duration-500"
         >
           Complete
@@ -64,10 +64,10 @@ export default function FilterForm({
 
         <button
           type="button"
-          onClick={() => onFilterStatus("filed")}
+          onClick={() => onFilterStatus("ARCHIVED")}
           className="px-3 py-1.5 border-2 border-border rounded focus:bg-[#21262d] transition-all duration-500"
         >
-          Filed
+          Archived
         </button>
       </div>
     </form>
