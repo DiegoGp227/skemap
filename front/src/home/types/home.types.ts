@@ -19,5 +19,5 @@ export interface ProjectsResponse {
 export interface CreateProjectDto {
   name: string;
   color: string;
-  description: string;
+  description?: string;
 }
