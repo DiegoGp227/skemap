@@ -23,7 +23,7 @@ export default function HomeSistem() {
         projects={projects}
         loading={loading}
         error={error}
-        setNewProjectForm={setNewProjectForm}
+        onNewProject={() => setNewProjectForm(true)}
       />
       {newProjectForm && (
         <NewProjectForm
