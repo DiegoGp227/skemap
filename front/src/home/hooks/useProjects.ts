@@ -1,26 +1,19 @@
-import { useCallback, useState } from "react";
+import useSWR from "swr";
 import { getProjects } from "../services/projects.services";
 import { Project } from "../types/home.types";
 
-export default function useProjects() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+export default function useProjects(status: string, search: string) {
+  // La key de SWR es un array con los filtros actuales.
+  // Cuando status o search cambian, SWR detecta una key distinta y re-fetcha automáticamente.
+  // Esto reemplaza el useEffect + fetchProjects manual que teníamos antes.
+  const { data, isLoading, error } = useSWR(
+    ["projects", status, search],
+    () => getProjects(status, search)
+  );
 
-  const fetchProjects = useCallback(async (status: string, search: string) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const data = await getProjects(status, search);
-      setProjects(data.projects);
-    } catch (err) {
-      setError("Error loading projects");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  return { projects, loading, error, fetchProjects };
+  return {
+    projects: data?.projects ?? ([] as Project[]),
+    loading: isLoading,
+    error: error ? "Error loading projects" : null,
+  };
 }
