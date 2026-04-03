@@ -1,7 +1,7 @@
 "use client";
 import FilterForm from "@/app/components/organism/FilterForm";
 import ProjectsSection from "./ProjectsSection";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useProjects from "@/src/home/hooks/useProjects";
 import NewProjectForm from "./NewProjectForm";
 
@@ -10,11 +10,9 @@ export default function HomeSistem() {
   const [search, setSearch] = useState<string>("");
   const [newProjectForm, setNewProjectForm] = useState<boolean>(false);
 
-  const { error, loading, projects, fetchProjects } = useProjects();
-
-  useEffect(() => {
-    fetchProjects(status, search);
-  }, [search, status, fetchProjects]);
+  // Pasamos los filtros directamente al hook. SWR re-fetcha solo cuando cambian,
+  // por lo que ya no necesitamos el useEffect manual que teníamos antes.
+  const { error, loading, projects } = useProjects(status, search);
 
   return (
     <>
