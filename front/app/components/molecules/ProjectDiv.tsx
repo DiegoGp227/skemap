@@ -1,18 +1,22 @@
+import Link from "next/link";
 import TecnologiesPills from "../atoms/TecnologiesPills";
 import ProgressBar from "./ProgressBar";
 
 interface IProjectDivProps {
+  id: number;
   title: string;
   description?: string;
   status: string;
 }
 
 export default function ProjectDiv({
+  id,
   title,
   description,
   status,
 }: IProjectDivProps) {
   return (
+    <Link href={`/projects/${id}`}>
     <div className="w-100 p-5 border-2 bg-surface border-border rounded transition duration-500 ease-in-out hover:-translate-y-1 hover:border-ring flex flex-col gap-5">
       <div className="flex gap-2">
         <div>
@@ -45,5 +49,6 @@ export default function ProjectDiv({
         </div>
       </div>
     </div>
+    </Link>
   );
 }
