@@ -41,6 +41,7 @@ export default function ProjectsSection({
                 color={project.color}
                 epicsCount={project._count.epics}
                 createdAt={project.createdAt}
+                technologies={project.technologies}
               />
             ))}
           </div>

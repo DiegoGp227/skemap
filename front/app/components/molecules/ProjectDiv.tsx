@@ -11,6 +11,7 @@ interface IProjectDivProps {
   color: string;
   epicsCount: number;
   createdAt: string;
+  technologies: string[];
 }
 
 export default function ProjectDiv({
@@ -21,6 +22,7 @@ export default function ProjectDiv({
   color,
   epicsCount,
   createdAt,
+  technologies,
 }: IProjectDivProps) {
   const timeAgo = useTimeAgo(createdAt);
   return (
@@ -39,11 +41,9 @@ export default function ProjectDiv({
         <ProgressBar current={2} label="stories" total={23} color={color} />
         <div className="flex">
           <div className="flex gap-2 flex-wrap w-[70%]">
-            <TecnologiesPills pillsName="React js" />
-            <TecnologiesPills pillsName="React js" />
-            <TecnologiesPills pillsName="React js" />
-            <TecnologiesPills pillsName="React js" />
-            <TecnologiesPills pillsName="React js" />
+            {(technologies ?? []).map((tech) => (
+              <TecnologiesPills key={tech} pillsName={tech} />
+            ))}
           </div>
           <div className="w-[30%]">
             <p>{epicsCount} Topics</p>
