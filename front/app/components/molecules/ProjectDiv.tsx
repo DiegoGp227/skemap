@@ -35,7 +35,7 @@ export default function ProjectDiv({
         <div className="flex gap-2 justify-between">
           <div>
             <h3 className="text-2xl font-bold">{title}</h3>
-            <p className="text-fg-secondary">{description}</p>
+            <p className="text-fg-muted">{description}</p>
           </div>
           <div className="bg-[#1a3327] py-1 px-3 text-xs rounded text-success self-start">
             <p>{status}</p>
