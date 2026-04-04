@@ -8,6 +8,7 @@ export interface Project {
   description?: string;
   color: ProjectColor;
   status: ProjectStatus;
+  technologies: string[];
   createdAt: string;
   updatedAt: string;
   _count: { epics: number };
@@ -21,4 +22,5 @@ export interface CreateProjectDto {
   name: string;
   color: string;
   description?: string;
+  technologies?: string[];
 }
