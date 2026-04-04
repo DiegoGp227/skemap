@@ -36,6 +36,7 @@ export const getProjectsByUser = async (
       status: true,
       createdAt: true,
       updatedAt: true,
+      _count: { select: { epics: true } },
     },
     orderBy: {
       createdAt: "desc",
