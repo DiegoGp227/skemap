@@ -26,3 +26,13 @@ export interface CreateProjectDto {
   description?: string;
   technologies?: string[];
 }
+
+export interface StatsBody {
+  active: number;
+  completed: number;
+  archived: number;
+}
+
+export interface StatsResponse {
+  stats: StatsBody;
+}
