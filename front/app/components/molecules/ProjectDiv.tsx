@@ -1,6 +1,7 @@
 import Link from "next/link";
 import TecnologiesPills from "../atoms/TecnologiesPills";
 import ProgressBar from "./ProgressBar";
+import useTimeAgo from "@/src/shared/hooks/useTimeAgo";
 
 interface IProjectDivProps {
   id: number;
@@ -8,6 +9,8 @@ interface IProjectDivProps {
   description?: string;
   status: string;
   color: string;
+  epicsCount: number;
+  createdAt: string;
 }
 
 export default function ProjectDiv({
@@ -16,7 +19,10 @@ export default function ProjectDiv({
   description,
   status,
   color,
+  epicsCount,
+  createdAt,
 }: IProjectDivProps) {
+  const timeAgo = useTimeAgo(createdAt);
   return (
     <Link href={`/projects/${id}`}>
       <div className="w-100 p-5 border-2 bg-surface border-border rounded transition duration-500 ease-in-out hover:-translate-y-1 hover:border-ring flex flex-col gap-5">
@@ -46,8 +52,8 @@ export default function ProjectDiv({
             <TecnologiesPills pillsName="React js" />
           </div>
           <div className="w-[30%]">
-            <p>3 Topics</p>
-            <p>2 weeks ago</p>
+            <p>{epicsCount} Topics</p>
+            <p>{timeAgo}</p>
           </div>
         </div>
       </div>
