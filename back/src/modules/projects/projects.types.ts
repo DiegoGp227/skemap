@@ -2,6 +2,7 @@ export interface CreateProjectInput {
   name: string;
   description?: string;
   color: string;
+  technologies?: string[];
 }
 
 export interface UpdateProjectInput {
@@ -9,4 +10,5 @@ export interface UpdateProjectInput {
   description?: string;
   color?: string;
   status?: "ACTIVE" | "COMPLETED" | "ARCHIVED";
+  technologies?: string[];
 }
