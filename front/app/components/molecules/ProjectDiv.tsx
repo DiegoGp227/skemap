@@ -28,17 +28,11 @@ export default function ProjectDiv({
       <div className="w-100 p-5 border-2 bg-surface border-border rounded transition duration-500 ease-in-out hover:-translate-y-1 hover:border-ring flex flex-col gap-5">
         <div className="flex gap-2">
           <div>
-            <div>
-              <h3 className="text-2xl font-bold">{title}</h3>
-            </div>
-            <div>
-              <p className="text-fg-secondary">{description}</p>
-            </div>
+            <h3 className="text-2xl font-bold">{title}</h3>
+            <p className="text-fg-secondary">{description}</p>
           </div>
-          <div>
-            <div className="bg-[#1a3327] py-1 px-3 rounded text-success">
-              <p>{status}</p>
-            </div>
+          <div className="bg-[#1a3327] py-1 px-3 rounded text-success self-start">
+            <p>{status}</p>
           </div>
         </div>
 
