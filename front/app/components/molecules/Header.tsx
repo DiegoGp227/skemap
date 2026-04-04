@@ -1,21 +1,40 @@
+"use client";
+
 import Image from "next/image";
-import { User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import ModalLogout from "./ModalLogout";
+import { createPortal } from "react-dom";
+import { useLogout } from "@/src/auth/hooks/useLogout";
 
 export default function Header() {
-  const [modal, setModal] = useState<boolean>(false);
+  const [modal, setModal] = useState(false);
+  const [modalPos, setModalPos] = useState({ top: 0, right: 0 });
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const logout = useLogout();
 
   useEffect(() => {
+    if (!modal) return;
+
     function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (!containerRef.current?.contains(target) && !modalRef.current?.contains(target)) {
         setModal(false);
       }
     }
-    if (modal) document.addEventListener("mousedown", handleClickOutside);
+
+    document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [modal]);
+
+  function handleToggle() {
+    if (!modal && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      setModalPos({ top: rect.bottom + 8, right: window.innerWidth - rect.right });
+    }
+    setModal((prev) => !prev);
+  }
 
   return (
     <header className="w-full h-16 flex justify-center bg-base/60 backdrop-blur-md border-b border-border sticky top-0 z-50">
@@ -29,16 +48,47 @@ export default function Header() {
             className="object-contain"
           />
         </div>
-        <div className="relative" ref={containerRef}>
+        <div ref={containerRef}>
           <button
+            ref={buttonRef}
             className="border-2 border-border p-2 rounded-full cursor-pointer"
-            onClick={() => setModal((prev) => !prev)}
+            onClick={handleToggle}
           >
             <User className="w-6 h-6" />
           </button>
-          {modal && <ModalLogout />}
         </div>
       </div>
+      {modal && createPortal(
+        <div
+          ref={modalRef}
+          style={{
+            position: "fixed",
+            top: modalPos.top,
+            right: modalPos.right,
+            zIndex: 60,
+            width: "11rem",
+          }}
+          className="bg-surface border border-border rounded-lg shadow-xl overflow-hidden"
+        >
+          <div className="px-3 py-2 border-b border-border">
+            <p className="text-xs text-fg-muted font-medium uppercase tracking-wider">My account</p>
+          </div>
+          <div className="p-1">
+            <button className="w-full flex items-center gap-2 px-3 py-2 text-sm text-fg rounded-md hover:bg-overlay cursor-pointer transition-colors">
+              <User className="w-4 h-4 text-fg-muted" />
+              Profile
+            </button>
+            <button
+              onClick={logout}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-accent-red rounded-md hover:bg-overlay cursor-pointer transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          </div>
+        </div>,
+        document.body
+      )}
     </header>
   );
 }
