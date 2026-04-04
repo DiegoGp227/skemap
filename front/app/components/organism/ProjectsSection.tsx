@@ -38,6 +38,7 @@ export default function ProjectsSection({
                 status={project.status}
                 description={project.description}
                 title={project.name}
+                color={project.color}
               />
             ))}
           </div>
