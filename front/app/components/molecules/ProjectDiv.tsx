@@ -41,9 +41,12 @@ export default function ProjectDiv({
         <ProgressBar current={2} label="stories" total={23} color={color} />
         <div className="flex">
           <div className="flex gap-2 flex-wrap w-[70%]">
-            {(technologies ?? []).map((tech) => (
+            {(technologies ?? []).slice(0, 7).map((tech) => (
               <TecnologiesPills key={tech} pillsName={tech} />
             ))}
+            {(technologies ?? []).length > 7 && (
+              <TecnologiesPills pillsName={`+${technologies.length - 7}`} />
+            )}
           </div>
           <div className="w-[30%]">
             <p>{epicsCount} Topics</p>
