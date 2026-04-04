@@ -9,6 +9,7 @@ import { ProjectStatus } from "@prisma/client";
 import {
   getProjectsByUser,
   getProjectById,
+  getProjectsStatsByUser,
   createProject as createProjectService,
   updateProject as updateProjectService,
   deleteProject as deleteProjectService,
@@ -230,6 +231,32 @@ export const deleteProject = async (
     res.status(204).send();
   } catch (error) {
     console.error("❌ Error in deleteProject:", error);
+
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json(error.toJSON());
+      return;
+    }
+
+    const internalError = new InternalServerError("Internal server error");
+    res.status(internalError.statusCode).json(internalError.toJSON());
+  }
+};
+
+/**
+ * @route   GET /projects/stats
+ * @headers Authorization: Bearer <token>
+ * @access  Private
+ * @returns { stats: { active: number, completed: number, archived: number } }
+ */
+export const getProjectsStats = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const stats = await getProjectsStatsByUser(req.user!.id);
+    res.status(200).json({ stats });
+  } catch (error) {
+    console.error("❌ Error in getProjectsStats:", error);
 
     if (error instanceof AppError) {
       res.status(error.statusCode).json(error.toJSON());
