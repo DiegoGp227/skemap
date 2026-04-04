@@ -2,7 +2,7 @@ import EpicDiv from "../molecules/EpicDiv";
 
 export default function EpicSecction() {
   return (
-    <div className="gap-8 p-4">
+    <div className="flex flex-col gap-1 p-4">
       <p>Epics</p>
       <EpicDiv title="Launch MVP" progress="3/10" color="#22c55e" />
       <EpicDiv title="Design System" progress="7/10" color="#3b82f6" />
