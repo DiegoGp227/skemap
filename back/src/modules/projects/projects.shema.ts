@@ -4,6 +4,7 @@ export const createProjectSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+  technologies: z.array(z.string().min(1).max(50)).max(20).optional().default([]),
 });
 
 export const updateProjectSchema = createProjectSchema.partial().extend({
