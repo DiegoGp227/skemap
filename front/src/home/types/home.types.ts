@@ -9,6 +9,8 @@ export interface Project {
   color: ProjectColor;
   status: ProjectStatus;
   technologies: string[];
+  tasksTotal: number;
+  tasksDone: number;
   createdAt: string;
   updatedAt: string;
   _count: { epics: number };
