@@ -10,7 +10,7 @@ export default async function ProjectPage({ params }: Props) {
   return (
     <div className="flex w-full h-full">
       <LateralBar />
-      <ProjectSistem id={id} />
+      <ProjectSistem id={id} description="una description de example" title="example" progress="12/13"/>
     </div>
   );
 }
