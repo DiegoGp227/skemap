@@ -1,6 +1,10 @@
 import { projectsURL } from "@/src/shared/constants/urls";
 import { fetcher, postFetcher } from "@/utils/utils";
-import { CreateProjectDto, Project, ProjectsResponse } from "../types/home.types";
+import {
+  CreateProjectDto,
+  Project,
+  ProjectsResponse,
+} from "../types/home.types";
 
 export function getProjects(
   status: string,
@@ -17,3 +21,4 @@ export function getProjects(
 export function createProject(dto: CreateProjectDto): Promise<Project> {
   return postFetcher<Project>(projectsURL.toString(), dto);
 }
+
