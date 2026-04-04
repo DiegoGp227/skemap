@@ -1,3 +1,6 @@
+import LateralBar from "../components/organism/LateralBar";
+import ProjectSistem from "../components/organism/ProjectSistem";
+
 interface Props {
   params: Promise<{ id: string }>;
 }
@@ -5,8 +8,9 @@ interface Props {
 export default async function ProjectPage({ params }: Props) {
   const { id } = await params;
   return (
-    <div>
-      <h1>Proyecto #{id}</h1>
+    <div className="flex w-full h-full">
+      <LateralBar />
+      <ProjectSistem id={id} />
     </div>
   );
 }
