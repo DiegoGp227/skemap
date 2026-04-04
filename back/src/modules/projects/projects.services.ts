@@ -171,3 +171,24 @@ export const deleteProject = async (projectId: number, userId: number) => {
 
   await prisma.project.delete({ where: { id: projectId } });
 };
+
+/**
+ * Devuelve el conteo de proyectos del usuario agrupado por estado.
+ * Usa groupBy de Prisma — una sola query, sin SQL raw.
+ * Si un estado no tiene proyectos no aparece en rows → default 0.
+ */
+export const getProjectsStatsByUser = async (userId: number) => {
+  const rows = await prisma.project.groupBy({
+    by: ["status"],
+    where: { ownerId: userId },
+    _count: { id: true },
+  });
+
+  const find = (s: ProjectStatus) => rows.find((r) => r.status === s)?._count.id ?? 0;
+
+  return {
+    active:    find(ProjectStatus.ACTIVE),
+    completed: find(ProjectStatus.COMPLETED),
+    archived:  find(ProjectStatus.ARCHIVED),
+  };
+};
