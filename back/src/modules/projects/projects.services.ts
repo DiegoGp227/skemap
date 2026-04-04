@@ -3,12 +3,16 @@ import prisma from "../../db/prisma.js";
 import { ConflictError, NotFoundError } from "../../errors/appError.js";
 import { CreateProjectInput, UpdateProjectInput } from "./projects.types.js";
 
-/**
- * @param userId - ID del usuario autenticado
- * @param status - Enum de Prisma ya traducido por el controller (ACTIVE, COMPLETED, ARCHIVED)
- * @param search - Texto a buscar en el nombre del proyecto
- * @returns Array de proyectos que cumplen los filtros
- */
+type TaskStats = { project_id: number; tasks_total: bigint; tasks_done: bigint };
+
+// prisma.$queryRaw devuelve bigint para COUNT — los convertimos a number antes de retornar
+const normalizeStats = (stats: TaskStats[]) =>
+  stats.map((s) => ({
+    projectId: s.project_id,
+    tasksTotal: Number(s.tasks_total),
+    tasksDone: Number(s.tasks_done),
+  }));
+
 export const getProjectsByUser = async (
   userId: number,
   status?: ProjectStatus,
@@ -17,16 +21,8 @@ export const getProjectsByUser = async (
   const projects = await prisma.project.findMany({
     where: {
       ownerId: userId,
-
-      // Si status tiene valor lo usamos directamente, ya viene traducido.
-      // Si es undefined (caso "all" o sin param), no se agrega al WHERE.
       ...(status && { status }),
-
-      // contains + mode insensitive = ILIKE '%search%' en SQL.
-      // Solo se aplica si search tiene valor.
-      ...(search && {
-        name: { contains: search, mode: "insensitive" },
-      }),
+      ...(search && { name: { contains: search, mode: "insensitive" } }),
     },
     select: {
       id: true,
@@ -39,25 +35,39 @@ export const getProjectsByUser = async (
       updatedAt: true,
       _count: { select: { epics: true } },
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { createdAt: "desc" },
   });
 
-  return projects;
-};
+  if (projects.length === 0) return [];
 
-/**
- * @param projectId - ID del proyecto que se quiere obtener (viene de req.params)
- * @param userId    - ID del usuario autenticado (viene del token JWT)
- * @returns El proyecto encontrado o null si no existe
- */
+  const projectIds = projects.map((p) => p.id);
+
+  const rawStats = await prisma.$queryRaw<TaskStats[]>`
+    SELECT
+      e."projectId"                                        AS project_id,
+      COUNT(t.id)                                          AS tasks_total,
+      COUNT(t.id) FILTER (WHERE t.status = 'DONE')         AS tasks_done
+    FROM "Epic" e
+    LEFT JOIN "Task" t ON t."epicId" = e.id
+    WHERE e."projectId" = ANY(${projectIds}::int[])
+    GROUP BY e."projectId"
+  `;
+
+  const statsMap = new Map(normalizeStats(rawStats).map((s) => [s.projectId, s]));
+
+  return projects.map((project) => {
+    const stats = statsMap.get(project.id);
+    return {
+      ...project,
+      tasksTotal: stats?.tasksTotal ?? 0,
+      tasksDone: stats?.tasksDone ?? 0,
+    };
+  });
+};
 
 export const getProjectById = async (projectId: number, userId: number) => {
   const project = await prisma.project.findUnique({
-    where: {
-      id: projectId,
-    },
+    where: { id: projectId },
     select: {
       id: true,
       name: true,
@@ -68,21 +78,32 @@ export const getProjectById = async (projectId: number, userId: number) => {
       ownerId: true,
       createdAt: true,
       updatedAt: true,
+      _count: { select: { epics: true } },
     },
   });
 
-  if (!project || project.ownerId !== userId) {
-    return null;
-  }
+  if (!project || project.ownerId !== userId) return null;
 
-  return project;
+  const rawStats = await prisma.$queryRaw<TaskStats[]>`
+    SELECT
+      e."projectId"                                        AS project_id,
+      COUNT(t.id)                                          AS tasks_total,
+      COUNT(t.id) FILTER (WHERE t.status = 'DONE')         AS tasks_done
+    FROM "Epic" e
+    LEFT JOIN "Task" t ON t."epicId" = e.id
+    WHERE e."projectId" = ${projectId}
+    GROUP BY e."projectId"
+  `;
+
+  const stats = normalizeStats(rawStats)[0];
+
+  return {
+    ...project,
+    tasksTotal: stats?.tasksTotal ?? 0,
+    tasksDone: stats?.tasksDone ?? 0,
+  };
 };
 
-/**
- * @param data    - Campos del proyecto a crear
- * @param ownerId - ID del usuario autenticado
- * @returns El proyecto creado
- */
 export const createProject = async (
   data: CreateProjectInput,
   ownerId: number,
@@ -111,13 +132,6 @@ export const createProject = async (
 
   return project;
 };
-
-/**
- * @param projectId - ID del proyecto a actualizar
- * @param userId    - ID del usuario autenticado
- * @param data      - Campos a actualizar (parciales)
- * @returns El proyecto actualizado
- */
 
 export const updateProject = async (
   projectId: number,
@@ -148,10 +162,6 @@ export const updateProject = async (
   return project;
 };
 
-/**
- * @param projectId - ID del proyecto a eliminar
- * @param userId    - ID del usuario autenticado
- */
 export const deleteProject = async (projectId: number, userId: number) => {
   const existing = await getProjectById(projectId, userId);
 
