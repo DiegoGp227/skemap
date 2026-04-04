@@ -1,6 +1,9 @@
+"use client";
+
 import useCreateProject from "@/src/home/hooks/useCreateProject";
 import { CreateProjectDto } from "@/src/home/types/home.types";
 import { X } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface INewProjectFormProps {
@@ -15,13 +18,38 @@ export default function NewProjectForm({
   const {
     handleSubmit,
     register,
+    setValue,
+    watch,
     formState: { errors },
-  } = useForm<CreateProjectDto>();
+  } = useForm<CreateProjectDto>({ defaultValues: { technologies: [] } });
+
   const { error, handleCreateProject } = useCreateProject();
+  const [techInput, setTechInput] = useState("");
+
+  const technologies = watch("technologies") ?? [];
+
+  function addTech() {
+    const value = techInput.trim();
+    if (!value || technologies.includes(value) || technologies.length >= 20) return;
+    setValue("technologies", [...technologies, value]);
+    setTechInput("");
+  }
+
+  function removeTech(tech: string) {
+    setValue("technologies", technologies.filter((t) => t !== tech));
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addTech();
+    } else if (e.key === "Backspace" && techInput === "" && technologies.length > 0) {
+      removeTech(technologies[technologies.length - 1]);
+    }
+  }
 
   const onSubmit = async (dto: CreateProjectDto) => {
     const success = await handleCreateProject(dto);
-
     if (success) onClose();
   };
 
@@ -93,6 +121,37 @@ export default function NewProjectForm({
           {errors.description && (
             <p className="text-red-500 text-sm">{errors.description.message}</p>
           )}
+
+          <div className="flex flex-col gap-1">
+            <label className="text-fg-muted text-sm">Technologies</label>
+            <div className="flex flex-wrap gap-1.5 bg-overlay border border-border rounded px-3 py-2 focus-within:border-ring transition-colors duration-300 min-h-10.5">
+              {technologies.map((tech) => (
+                <span
+                  key={tech}
+                  className="flex items-center gap-1 bg-surface border border-border text-fg text-sm px-2 py-0.5 rounded-full"
+                >
+                  {tech}
+                  <button
+                    type="button"
+                    onClick={() => removeTech(tech)}
+                    className="text-fg-muted hover:text-fg cursor-pointer"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+              <input
+                type="text"
+                value={techInput}
+                onChange={(e) => setTechInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onBlur={addTech}
+                placeholder={technologies.length === 0 ? "React, Node.js..." : ""}
+                className="flex-1 min-w-20 bg-transparent text-fg text-sm focus:outline-none placeholder:text-fg-muted"
+              />
+            </div>
+            <p className="text-fg-muted text-xs">Enter or comma to add · Backspace to remove</p>
+          </div>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
