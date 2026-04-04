@@ -42,6 +42,8 @@ export default function ProjectsSection({
                 epicsCount={project._count.epics}
                 createdAt={project.createdAt}
                 technologies={project.technologies}
+                tasksTotal={project.tasksTotal}
+                tasksDone={project.tasksDone}
               />
             ))}
           </div>
