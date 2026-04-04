@@ -10,6 +10,7 @@ export interface Project {
   status: ProjectStatus;
   createdAt: string;
   updatedAt: string;
+  _count: { epics: number };
 }
 
 export interface ProjectsResponse {
