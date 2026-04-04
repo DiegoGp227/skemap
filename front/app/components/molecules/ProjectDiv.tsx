@@ -7,6 +7,7 @@ interface IProjectDivProps {
   title: string;
   description?: string;
   status: string;
+  color: string;
 }
 
 export default function ProjectDiv({
@@ -14,6 +15,7 @@ export default function ProjectDiv({
   title,
   description,
   status,
+  color,
 }: IProjectDivProps) {
   return (
     <Link href={`/projects/${id}`}>
