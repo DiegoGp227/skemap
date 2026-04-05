@@ -20,12 +20,7 @@ export default function ProjectPage({ params }: Props) {
   return (
     <div className="flex w-full h-full">
       <LateralBar taskStatus={taskStatus} setTaskStatus={setTaskStatus} project={project} epics={epics} />
-      <ProjectSistem
-        id={id}
-        description="una description de example"
-        title="example"
-        progress="12/13"
-      />
+      <ProjectSistem id={id} epics={epics} />
     </div>
   );
 }
