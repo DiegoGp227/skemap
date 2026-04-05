@@ -63,7 +63,7 @@ export function EpicBlock({ epic }: { epic: Epic }) {
               )}
             </div>
             <div className="flex flex-col gap-1.5 pl-4 pt-2 pb-1">
-              <button className="flex items-end gap-3 px-4 border rounded-md cursor-pointer border-border text-fg-muted hover:bg-surface hover:text-fg transition duration-500 w-30">
+              <button className="flex items-end px-3 border rounded cursor-pointer border-border text-fg-muted hover:bg-surface hover:text-fg transition duration-500 w-fit">
                 New Task
               </button>
             </div>
