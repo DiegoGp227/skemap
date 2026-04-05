@@ -42,7 +42,7 @@ export const SWRProvider = ({ children }: { children: ReactNode }) => {
   }, [isClient, pathname, router]);
 
   if (!isClient) {
-    return <>{children}</>;
+    return null;
   }
   return (
     <StoreProvider store={store}>
