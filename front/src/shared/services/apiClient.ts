@@ -25,7 +25,7 @@ apiClient.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/";
+      window.location.href = "/auth";
     }
     console.error("API Error:", error);
     return Promise.reject(error);

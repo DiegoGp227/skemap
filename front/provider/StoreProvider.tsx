@@ -3,18 +3,43 @@
 import apiClient from "@/src/shared/services/apiClient";
 import { store } from "@/store/store";
 import { StoreProvider } from "easy-peasy";
+import { useRouter, usePathname } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { SWRConfig } from "swr";
 
 const fetcher = (url: string) => apiClient.get(url).then((res) => res.data);
 
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp * 1000 < Date.now();
+  } catch {
+    return true;
+  }
+};
+
+const PUBLIC_ROUTES = ["/auth"];
+
 export const SWRProvider = ({ children }: { children: ReactNode }) => {
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Ensure StoreProvider is only used in the client-side
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+    if (PUBLIC_ROUTES.includes(pathname)) return;
+
+    const token = localStorage.getItem("token");
+    if (!token || isTokenExpired(token)) {
+      localStorage.removeItem("token");
+      router.replace("/auth");
+    }
+  }, [isClient, pathname, router]);
 
   if (!isClient) {
     return null;
