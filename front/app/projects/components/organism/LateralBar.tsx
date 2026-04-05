@@ -2,7 +2,11 @@ import FilterProject from "../molecules/FilterProject";
 import InfoProject from "../molecules/InfoProject";
 import EpicSecction from "./EpicSecction";
 
-export default function LateralBar() {
+interface LateralBarProps {
+  setTaskStatus: any;
+}
+
+export default function LateralBar({setTaskStatus}: LateralBarProps) {
   return (
     <section className="h-full max-w-72">
       <InfoProject
