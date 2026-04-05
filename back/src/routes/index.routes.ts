@@ -9,6 +9,7 @@ import {
   createProject,
   updateProject,
   deleteProject,
+  updateTaskStatus,
 } from "../modules/projects/projects.controllers.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
@@ -20,6 +21,9 @@ router.get("/db", dbCheck);
 // Auth Routes
 router.post("/signup", signup);
 router.post("/login", login);
+
+// Tasks Routes
+router.patch("/tasks/:id/status", authMiddleware, updateTaskStatus);
 
 // Projects Routes
 router.get("/projects", authMiddleware, getProjects);

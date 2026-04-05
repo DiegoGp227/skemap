@@ -14,8 +14,9 @@ import {
   createProject as createProjectService,
   updateProject as updateProjectService,
   deleteProject as deleteProjectService,
+  updateTaskStatus as updateTaskStatusService,
 } from "./projects.services";
-import { createProjectSchema, getProjectBoardSchema, getProjectsSchema, updateProjectSchema } from "./projects.shema";
+import { createProjectSchema, getProjectBoardSchema, getProjectsSchema, updateProjectSchema, updateTaskStatusSchema } from "./projects.shema";
 
 // El middleware de auth ya verificó el token antes de llegar aquí.
 // req.user está garantizado en todas estas rutas.
@@ -284,6 +285,54 @@ export const getProjectBoard = async (
     res.status(200).json(board);
   } catch (error) {
     console.error("❌ Error in getProjectBoard:", error);
+
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json(error.toJSON());
+      return;
+    }
+
+    const internalError = new InternalServerError("Internal server error");
+    res.status(internalError.statusCode).json(internalError.toJSON());
+  }
+};
+
+/**
+ * @route   PATCH /tasks/:id/status
+ * @headers Authorization: Bearer <token>
+ * @params  id — ID de la tarea
+ * @body    { status: TaskStatus }
+ * @access  Private
+ * @returns { task }
+ */
+export const updateTaskStatus = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const taskId = parseInt(req.params.id as string);
+
+    if (isNaN(taskId)) {
+      throw new NotFoundError("Task");
+    }
+
+    const validation = updateTaskStatusSchema.safeParse(req.body);
+
+    if (!validation.success) {
+      const errors = validation.error.issues.reduce(
+        (acc: Record<string, string>, err) => {
+          acc[err.path.join(".")] = err.message;
+          return acc;
+        },
+        {},
+      );
+      throw new ValidationError("Validation errors", errors);
+    }
+
+    const task = await updateTaskStatusService(taskId, req.user!.id, validation.data.status);
+
+    res.status(200).json({ task });
+  } catch (error) {
+    console.error("❌ Error in updateTaskStatus:", error);
 
     if (error instanceof AppError) {
       res.status(error.statusCode).json(error.toJSON());

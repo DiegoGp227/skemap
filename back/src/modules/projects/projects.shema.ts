@@ -28,7 +28,13 @@ export const getProjectBoardSchema = z.object({
     .transform((val) => (val ? (Array.isArray(val) ? val : [val]) : undefined)),
 });
 
+// Body del PATCH /tasks/:id/status
+export const updateTaskStatusSchema = z.object({
+  status: taskStatusEnum,
+});
+
 export type CreateProjectDTO = z.infer<typeof createProjectSchema>;
 export type UpdateProjectDTO = z.infer<typeof updateProjectSchema>;
 export type GetProjectsDTO = z.infer<typeof getProjectsSchema>;
 export type GetProjectBoardDTO = z.infer<typeof getProjectBoardSchema>;
+export type UpdateTaskStatusDTO = z.infer<typeof updateTaskStatusSchema>;

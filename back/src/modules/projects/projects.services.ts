@@ -215,6 +215,27 @@ export const getProjectBoard = async (
 };
 
 /**
+ * Avanza el estado de una tarea.
+ * Verifica que el usuario sea owner del proyecto antes de actualizar.
+ */
+export const updateTaskStatus = async (
+  taskId: number,
+  userId: number,
+  status: TaskStatus,
+) => {
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: { epic: { select: { project: { select: { ownerId: true } } } } },
+  });
+
+  if (!task || task.epic.project.ownerId !== userId) {
+    throw new NotFoundError("Task");
+  }
+
+  return prisma.task.update({ where: { id: taskId }, data: { status } });
+};
+
+/**
  * Devuelve el conteo de proyectos del usuario agrupado por estado.
  * Usa groupBy de Prisma — una sola query, sin SQL raw.
  * Si un estado no tiene proyectos no aparece en rows → default 0.
