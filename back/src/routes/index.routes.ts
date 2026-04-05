@@ -22,9 +22,6 @@ router.get("/db", dbCheck);
 router.post("/signup", signup);
 router.post("/login", login);
 
-// Tasks Routes
-router.patch("/tasks/:id/status", authMiddleware, updateTaskStatus);
-
 // Projects Routes
 router.get("/projects", authMiddleware, getProjects);
 router.get("/projects/stats", authMiddleware, getProjectsStats);
@@ -33,3 +30,6 @@ router.get("/projects/:id", authMiddleware, getProject);
 router.post("/projects", authMiddleware, createProject);
 router.patch("/projects/:id", authMiddleware, updateProject);
 router.delete("/projects/:id", authMiddleware, deleteProject);
+
+// Tasks Routes
+router.patch("/tasks/:id/status", authMiddleware, updateTaskStatus);

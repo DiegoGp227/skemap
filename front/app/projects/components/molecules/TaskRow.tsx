@@ -39,14 +39,25 @@ const PRIORITY_CONFIG = {
   },
 };
 
-export function TaskRow({ task }: { task: Task }) {
+interface TaskRowProps {
+  task: Task;
+  onStatusChange: () => void;
+}
+
+export function TaskRow({ task, onStatusChange }: TaskRowProps) {
   const status = STATUS_CONFIG[task.status];
   const priority = PRIORITY_CONFIG[task.priority];
 
   return (
     <div className="flex items-center gap-3 px-4 py-3 bg-surface border border-border rounded-md cursor-pointer hover:border-ring transition duration-200 w-196">
       <span
-        className={`shrink-0 px-2 py-0.5 text-xs font-semibold rounded ${status.bg} ${status.text} min-w-21 text-center`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onStatusChange();
+        }}
+        className={`shrink-0 px-2 py-0.5 text-xs font-semibold rounded cursor-pointer select-none
+          ${status.bg} ${status.text} min-w-21 text-center
+          hover:opacity-75 transition-opacity duration-150`}
       >
         {status.label}
       </span>

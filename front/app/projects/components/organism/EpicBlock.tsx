@@ -4,9 +4,14 @@ import { TaskRow } from "../molecules/TaskRow";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { Epic } from "@/src/projects/types/projects.types";
+import { Epic, TaskStatus } from "@/src/projects/types/projects.types";
 
-export function EpicBlock({ epic }: { epic: Epic }) {
+interface EpicBlockProps {
+  epic: Epic;
+  onTaskStatusChange: (taskId: number, currentStatus: TaskStatus) => void;
+}
+
+export function EpicBlock({ epic, onTaskStatusChange }: EpicBlockProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -59,7 +64,13 @@ export function EpicBlock({ epic }: { epic: Epic }) {
                   No tasks
                 </p>
               ) : (
-                epic.tasks.map((task) => <TaskRow key={task.id} task={task} />)
+                epic.tasks.map((task) => (
+                  <TaskRow
+                    key={task.id}
+                    task={task}
+                    onStatusChange={() => onTaskStatusChange(task.id, task.status)}
+                  />
+                ))
               )}
             </div>
             <div className="flex flex-col gap-1.5 pl-4 pt-2 pb-1">
