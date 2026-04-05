@@ -33,7 +33,6 @@ enum TaskStatus {
 }
 
 enum TaskPriority {
-  NONE
   LOW
   MEDIUM
   HIGH
@@ -45,22 +44,22 @@ enum TaskPriority {
 // ============================================================
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String    @unique
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
   name      String
-  email     String    @unique
-  password  String    // bcrypt hash
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  email     String   @unique
+  password  String // bcrypt hash
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  projects  Project[]
+  projects Project[]
 }
 
 model Project {
   id          Int           @id @default(autoincrement())
   name        String
   description String?
-  color       String   
+  color       String
   status      ProjectStatus @default(ACTIVE)
   ownerId     Int
   createdAt   DateTime      @default(now())
@@ -68,44 +67,60 @@ model Project {
 
   technologies String[]
 
-  owner       User          @relation(fields: [ownerId], references: [id])
-  epics       Epic[]
+  owner User   @relation(fields: [ownerId], references: [id])
+  epics Epic[]
 
-  @@unique([ownerId, name])  
+  @@unique([ownerId, name])
   @@index([ownerId])
 }
 
 model Epic {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String?
-  color       String   
+  color       String
   order       Int
   projectId   Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  tasks       Task[]
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks   Task[]
 
   @@unique([projectId, order])
   @@index([projectId])
 }
 
 model Task {
-  id          Int          @id @default(autoincrement())
-  title       String
-  description String?
-  status      TaskStatus   @default(TODO)
-  priority    TaskPriority @default(NONE)
-  order       Int
-  dueDate     DateTime?
-  epicId      Int
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id           Int          @id @default(autoincrement())
+  title        String
+  description  String?
+  status       TaskStatus   @default(TODO)
+  priority     TaskPriority @default(LOW)
+  technologies String[]
+  order        Int
+  dueDate      DateTime?
+  epicId       Int
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
-  epic        Epic         @relation(fields: [epicId], references: [id], onDelete: Cascade)
+  epic               Epic                 @relation(fields: [epicId], references: [id], onDelete: Cascade)
+  acceptanceCriteria AcceptanceCriteria[]
 
   @@unique([epicId, order])
   @@index([epicId])
+}
+
+model AcceptanceCriteria {
+  id        Int      @id @default(autoincrement())
+  text      String
+  done      Boolean  @default(false)
+  order     Int
+  taskId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
 }

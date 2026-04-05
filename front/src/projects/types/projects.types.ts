@@ -1,16 +1,28 @@
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE";
+export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+
+export interface AcceptanceCriteria {
+  id: number;
+  text: string;
+  done: boolean;
+  order: number;
+  taskId: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface Task {
   id: number;
   title: string;
   description: string | null;
   status: TaskStatus;
-  priority: "LOW" | "MEDIUM" | "HIGH";
+  priority: TaskPriority;
   order: number;
   dueDate: string | null;
   epicId: number;
   createdAt: string;
   updatedAt: string;
+  acceptanceCriteria: AcceptanceCriteria[];
 }
 
 export interface Epic {

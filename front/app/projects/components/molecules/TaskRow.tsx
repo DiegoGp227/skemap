@@ -1,7 +1,8 @@
 "use client";
 
-import { Task, TaskStatus } from "@/src/projects/types/projects.types";
+import { Task, TaskPriority, TaskStatus } from "@/src/projects/types/projects.types";
 import { ArrowDownToDot, ArrowUpFromDot, Minus } from "lucide-react";
+import React from "react";
 
 const STATUS_CONFIG: Record<
   TaskStatus,
@@ -21,7 +22,12 @@ const STATUS_CONFIG: Record<
   DONE: { label: "Done", bg: "bg-green-950", text: "text-green-400" },
 };
 
-const PRIORITY_CONFIG = {
+const PRIORITY_CONFIG: Record<TaskPriority, { label: string; color: string; icon: React.ReactNode }> = {
+  URGENT: {
+    label: "Urgent",
+    color: "text-red-500",
+    icon: <ArrowUpFromDot className="w-3 h-3" />,
+  },
   HIGH: {
     label: "High",
     color: "text-red-400",
