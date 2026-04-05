@@ -177,25 +177,41 @@ export const getProjectBoard = async (
   userId: number,
   statusFilter?: TaskStatus[],
 ) => {
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
-    include: {
-      epics: {
-        orderBy: { order: "asc" },
-        include: {
-          tasks: {
-            where: statusFilter ? { status: { in: statusFilter } } : undefined,
-            orderBy: { order: "asc" },
+  const [project, epicTotals, epicDone] = await Promise.all([
+    prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        epics: {
+          orderBy: { order: "asc" },
+          include: {
+            tasks: {
+              where: statusFilter ? { status: { in: statusFilter } } : undefined,
+              orderBy: { order: "asc" },
+            },
           },
         },
       },
-    },
-  });
+    }),
+    prisma.task.groupBy({ by: ["epicId"], where: { epic: { projectId } }, _count: { id: true } }),
+    prisma.task.groupBy({ by: ["epicId"], where: { epic: { projectId }, status: "DONE" }, _count: { id: true } }),
+  ]);
 
   if (!project || project.ownerId !== userId) return null;
 
+  const totalsMap = Object.fromEntries(epicTotals.map((r) => [r.epicId, r._count.id]));
+  const doneMap = Object.fromEntries(epicDone.map((r) => [r.epicId, r._count.id]));
+
+  const tasksTotal = epicTotals.reduce((acc, r) => acc + r._count.id, 0);
+  const tasksDone  = epicDone.reduce((acc, r) => acc + r._count.id, 0);
+
   const { epics, ...projectData } = project;
-  return { project: projectData, epics };
+  const epicsWithProgress = epics.map((epic) => ({
+    ...epic,
+    tasksTotal: totalsMap[epic.id] ?? 0,
+    tasksDone: doneMap[epic.id] ?? 0,
+  }));
+
+  return { project: { ...projectData, tasksTotal, tasksDone }, epics: epicsWithProgress };
 };
 
 /**
