@@ -34,7 +34,7 @@ export default function FilterProject({
 
   return (
     <div className="flex flex-col items-start gap-3 p-4">
-      <p>filter by state</p>
+      <p className="font-bold">filter by state</p>
 
       {/* Botón "All": resetea el array a vacío, lo que significa sin filtro activo */}
       <button

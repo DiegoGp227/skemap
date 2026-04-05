@@ -26,7 +26,7 @@ export default function InfoProject({
           Project
         </span>
       </div>
-      <h2 className="text-fg font-semibold text-lg flex-wrap flex">{title}</h2>
+      <h2 className="text-fg font-bold text-2xl flex-wrap flex ">{title}</h2>
       <p className="text-fg-muted text-sm">{tecnologies}</p>
       <ProgressBar current={current} label="Task" total={total} color={color} />
     </div>

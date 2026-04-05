@@ -8,9 +8,19 @@ interface EpicSecctionProps {
 export default function EpicSecction({ epics }: EpicSecctionProps) {
   return (
     <div className="flex flex-col gap-1 p-4">
-      <p>Epics</p>
+      <div className="flex justify-between">
+        <p className="font-bold">Epics</p>
+        <button className="border px-3 rounded border-border text-fg-muted hover:bg-surface transition duration-500 hover:text-fg">
+          New Epic
+        </button>
+      </div>
       {epics.map((epic) => (
-        <EpicDiv key={epic.id} title={epic.name} progress={`${epic.tasksDone}/${epic.tasksTotal}`} color={epic.color} />
+        <EpicDiv
+          key={epic.id}
+          title={epic.name}
+          progress={`${epic.tasksDone}/${epic.tasksTotal}`}
+          color={epic.color}
+        />
       ))}
     </div>
   );
