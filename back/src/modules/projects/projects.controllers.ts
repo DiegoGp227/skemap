@@ -10,11 +10,12 @@ import {
   getProjectsByUser,
   getProjectById,
   getProjectsStatsByUser,
+  getProjectBoard as getProjectBoardService,
   createProject as createProjectService,
   updateProject as updateProjectService,
   deleteProject as deleteProjectService,
 } from "./projects.services";
-import { createProjectSchema, getProjectsSchema, updateProjectSchema } from "./projects.shema";
+import { createProjectSchema, getProjectBoardSchema, getProjectsSchema, updateProjectSchema } from "./projects.shema";
 
 // El middleware de auth ya verificó el token antes de llegar aquí.
 // req.user está garantizado en todas estas rutas.
@@ -231,6 +232,58 @@ export const deleteProject = async (
     res.status(204).send();
   } catch (error) {
     console.error("❌ Error in deleteProject:", error);
+
+    if (error instanceof AppError) {
+      res.status(error.statusCode).json(error.toJSON());
+      return;
+    }
+
+    const internalError = new InternalServerError("Internal server error");
+    res.status(internalError.statusCode).json(internalError.toJSON());
+  }
+};
+
+/**
+ * @route   GET /projects/:id/board
+ * @headers Authorization: Bearer <token>
+ * @params  id — ID del proyecto
+ * @query   status? — uno o varios: TODO | IN_PROGRESS | IN_REVIEW | DONE
+ * @access  Private
+ * @returns { project, epics: Epic[] } cada epic incluye su array de tasks
+ */
+export const getProjectBoard = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const projectId = parseInt(req.params.id as string);
+
+    if (isNaN(projectId)) {
+      throw new NotFoundError("Project");
+    }
+
+    const validation = getProjectBoardSchema.safeParse(req.query);
+
+    if (!validation.success) {
+      const errors = validation.error.issues.reduce(
+        (acc: Record<string, string>, err) => {
+          acc[err.path.join(".")] = err.message;
+          return acc;
+        },
+        {},
+      );
+      throw new ValidationError("Invalid query params", errors);
+    }
+
+    const board = await getProjectBoardService(projectId, req.user!.id, validation.data.status);
+
+    if (!board) {
+      throw new NotFoundError("Project");
+    }
+
+    res.status(200).json(board);
+  } catch (error) {
+    console.error("❌ Error in getProjectBoard:", error);
 
     if (error instanceof AppError) {
       res.status(error.statusCode).json(error.toJSON());

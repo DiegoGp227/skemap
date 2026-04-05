@@ -4,6 +4,7 @@ import { login, signup } from "../modules/auth/auth.controllers.js";
 import {
   getProjects,
   getProject,
+  getProjectBoard,
   getProjectsStats,
   createProject,
   updateProject,
@@ -23,6 +24,7 @@ router.post("/login", login);
 // Projects Routes
 router.get("/projects", authMiddleware, getProjects);
 router.get("/projects/stats", authMiddleware, getProjectsStats);
+router.get("/projects/:id/board", authMiddleware, getProjectBoard);
 router.get("/projects/:id", authMiddleware, getProject);
 router.post("/projects", authMiddleware, createProject);
 router.patch("/projects/:id", authMiddleware, updateProject);

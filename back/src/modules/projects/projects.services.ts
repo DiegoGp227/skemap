@@ -1,4 +1,4 @@
-import { ProjectStatus } from "@prisma/client";
+import { ProjectStatus, TaskStatus } from "@prisma/client";
 import prisma from "../../db/prisma.js";
 import { ConflictError, NotFoundError } from "../../errors/appError.js";
 import { CreateProjectInput, UpdateProjectInput } from "./projects.types.js";
@@ -170,6 +170,32 @@ export const deleteProject = async (projectId: number, userId: number) => {
   }
 
   await prisma.project.delete({ where: { id: projectId } });
+};
+
+export const getProjectBoard = async (
+  projectId: number,
+  userId: number,
+  statusFilter?: TaskStatus[],
+) => {
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    include: {
+      epics: {
+        orderBy: { order: "asc" },
+        include: {
+          tasks: {
+            where: statusFilter ? { status: { in: statusFilter } } : undefined,
+            orderBy: { order: "asc" },
+          },
+        },
+      },
+    },
+  });
+
+  if (!project || project.ownerId !== userId) return null;
+
+  const { epics, ...projectData } = project;
+  return { project: projectData, epics };
 };
 
 /**
