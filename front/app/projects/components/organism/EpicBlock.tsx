@@ -5,14 +5,17 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Epic, TaskStatus } from "@/src/projects/types/projects.types";
+import NewTaskForm from "../molecules/NewTaskForm";
 
 interface EpicBlockProps {
   epic: Epic;
+  projectId: string;
   onTaskStatusChange: (taskId: number, currentStatus: TaskStatus) => void;
 }
 
-export function EpicBlock({ epic, onTaskStatusChange }: EpicBlockProps) {
+export function EpicBlock({ epic, projectId, onTaskStatusChange }: EpicBlockProps) {
   const [open, setOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   return (
     <div>
@@ -74,13 +77,24 @@ export function EpicBlock({ epic, onTaskStatusChange }: EpicBlockProps) {
               )}
             </div>
             <div className="flex flex-col gap-1.5 pl-4 pt-2 pb-1">
-              <button className="flex items-end px-3 border rounded cursor-pointer border-border text-fg-muted hover:bg-surface hover:text-fg transition duration-500 w-fit">
+              <button
+                onClick={() => setShowForm(true)}
+                className="flex items-end px-3 border rounded cursor-pointer border-border text-fg-muted hover:bg-surface hover:text-fg transition duration-500 w-fit"
+              >
                 New Task
               </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {showForm && (
+        <NewTaskForm
+          epicId={epic.id}
+          projectId={projectId}
+          onClose={() => setShowForm(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 export type TaskStatus = "TODO" | "IN_PROGRESS" | "IN_REVIEW" | "DONE";
-export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+export type TaskPriority = "LOW" | "MEDIUM" | "HIGH";
 
 export interface AcceptanceCriteria {
   id: number;
@@ -56,4 +56,17 @@ export interface BoardProject {
 export interface ProjectBoardResponse {
   project: BoardProject;
   epics: Epic[];
+}
+
+export interface CreateTaskDto {
+  title: string;
+  description?: string;
+  priority?: TaskPriority;
+  technologies?: string[];
+  dueDate?: string;
+  acceptanceCriteria?: string[];
+}
+
+export interface CreateTaskResponse {
+  task: Task;
 }

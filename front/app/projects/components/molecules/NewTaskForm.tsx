@@ -1,21 +1,42 @@
-import { TaskStatus } from "@/src/projects/types/projects.types";
+import useCreateTask from "@/src/projects/hooks/useCreateTask";
+import { CreateTaskDto } from "@/src/projects/types/projects.types";
 import { X, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-export default function NewTaskForm() {
+interface NewTaskFormProps {
+  epicId: number;
+  projectId: string;
+  onClose: () => void;
+}
+
+export default function NewTaskForm({ epicId, projectId, onClose }: NewTaskFormProps) {
   const [criterionInput, setCriterionInput] = useState("");
   const [criteria, setCriteria] = useState<string[]>([]);
+
+  const { handleCreateTask, loading } = useCreateTask(projectId);
+
+  const {
+    handleSubmit,
+    register,
+    setValue,
+  } = useForm<CreateTaskDto>({
+    defaultValues: { priority: "MEDIUM", technologies: [], acceptanceCriteria: [] },
+  });
 
   const handleAddCriterion = () => {
     const trimmed = criterionInput.trim();
     if (!trimmed) return;
-    setCriteria((prev) => [...prev, trimmed]);
+    const next = [...criteria, trimmed];
+    setCriteria(next);
+    setValue("acceptanceCriteria", next);
     setCriterionInput("");
   };
 
   const handleRemoveCriterion = (index: number) => {
-    setCriteria((prev) => prev.filter((_, i) => i !== index));
+    const next = criteria.filter((_, i) => i !== index);
+    setCriteria(next);
+    setValue("acceptanceCriteria", next);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -25,13 +46,10 @@ export default function NewTaskForm() {
     }
   };
 
-  const {
-    handleSubmit,
-    register,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<CreateProjectDto>({ defaultValues: { technologies: [] } });
+  const onSubmit = async (dto: CreateTaskDto) => {
+    const ok = await handleCreateTask(epicId, dto);
+    if (ok) onClose();
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
@@ -42,6 +60,8 @@ export default function NewTaskForm() {
         <div className="flex items-center justify-between">
           <h2 className="text-fg text-lg font-semibold">New Task</h2>
           <button
+            type="button"
+            onClick={onClose}
             className="text-fg-muted hover:text-fg cursor-pointer p-1 hover:bg-overlay rounded transition-colors duration-200"
             aria-label="Close modal"
           >
@@ -49,7 +69,7 @@ export default function NewTaskForm() {
           </button>
         </div>
 
-        <form className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           {/* Title */}
           <div className="flex flex-col gap-1">
             <label htmlFor="taskTitle" className="text-fg-muted text-sm">
@@ -59,6 +79,7 @@ export default function NewTaskForm() {
               type="text"
               id="taskTitle"
               className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
+              {...register("title")}
             />
           </div>
 
@@ -71,6 +92,7 @@ export default function NewTaskForm() {
               type="text"
               id="description"
               className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
+              {...register("description")}
             />
           </div>
 
@@ -81,9 +103,8 @@ export default function NewTaskForm() {
             </label>
             <select
               id="priority"
-              name="priority"
               className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
-              defaultValue="MEDIUM"
+              {...register("priority")}
             >
               <option value="LOW">Low</option>
               <option value="MEDIUM">Medium</option>
@@ -107,7 +128,6 @@ export default function NewTaskForm() {
           <div className="flex flex-col gap-2">
             <label className="text-fg-muted text-sm">Acceptance Criteria</label>
 
-            {/* Input + Add button */}
             <div className="flex gap-2">
               <input
                 type="text"
@@ -126,7 +146,6 @@ export default function NewTaskForm() {
               </button>
             </div>
 
-            {/* List */}
             {criteria.length > 0 && (
               <ul className="flex flex-col gap-1 mt-1">
                 {criteria.map((criterion, index) => (
@@ -148,6 +167,14 @@ export default function NewTaskForm() {
               </ul>
             )}
           </div>
+
+          <button
+            type="submit"
+            className="border-2 border-border px-1 py-2 bg-blue-600 hover:bg-blue-700 transition-all duration-500"
+            disabled={loading}
+          >
+            {loading ? "loading..." : "send"}
+          </button>
         </form>
       </div>
     </div>
