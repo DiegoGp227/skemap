@@ -13,14 +13,26 @@ interface Props {
 export default function ProjectPage({ params }: Props) {
   const { id } = use(params);
   const [taskStatus, setTaskStatus] = useState<TaskStatus[]>([]);
-  const { project, epics, loading, advanceTaskStatus } = useProjectBoard(id, taskStatus);
+  const { project, epics, loading, advanceTaskStatus } = useProjectBoard(
+    id,
+    taskStatus,
+  );
 
   if (loading || !project) return null;
 
   return (
     <div className="flex w-full h-full">
-      <LateralBar taskStatus={taskStatus} setTaskStatus={setTaskStatus} project={project} epics={epics} />
-      <ProjectSistem id={id} epics={epics} onTaskStatusChange={advanceTaskStatus} />
+      <LateralBar
+        taskStatus={taskStatus}
+        setTaskStatus={setTaskStatus}
+        project={project}
+        epics={epics}
+      />
+      <ProjectSistem
+        id={id}
+        epics={epics}
+        onTaskStatusChange={advanceTaskStatus}
+      />
     </div>
   );
 }
