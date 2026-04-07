@@ -3,7 +3,11 @@ import prisma from "../../db/prisma.js";
 import { ConflictError, NotFoundError } from "../../errors/appError.js";
 import { CreateProjectInput, UpdateProjectInput } from "./projects.types.js";
 
-type TaskStats = { project_id: number; tasks_total: bigint; tasks_done: bigint };
+type TaskStats = {
+  project_id: number;
+  tasks_total: bigint;
+  tasks_done: bigint;
+};
 
 // prisma.$queryRaw devuelve bigint para COUNT — los convertimos a number antes de retornar
 const normalizeStats = (stats: TaskStats[]) =>
@@ -53,7 +57,9 @@ export const getProjectsByUser = async (
     GROUP BY e."projectId"
   `;
 
-  const statsMap = new Map(normalizeStats(rawStats).map((s) => [s.projectId, s]));
+  const statsMap = new Map(
+    normalizeStats(rawStats).map((s) => [s.projectId, s]),
+  );
 
   return projects.map((project) => {
     const stats = statsMap.get(project.id);
@@ -185,24 +191,38 @@ export const getProjectBoard = async (
           orderBy: { order: "asc" },
           include: {
             tasks: {
-              where: statusFilter ? { status: { in: statusFilter } } : undefined,
+              where: statusFilter
+                ? { status: { in: statusFilter } }
+                : undefined,
               orderBy: { order: "asc" },
             },
           },
         },
       },
     }),
-    prisma.task.groupBy({ by: ["epicId"], where: { epic: { projectId } }, _count: { id: true } }),
-    prisma.task.groupBy({ by: ["epicId"], where: { epic: { projectId }, status: "DONE" }, _count: { id: true } }),
+    prisma.task.groupBy({
+      by: ["epicId"],
+      where: { epic: { projectId } },
+      _count: { id: true },
+    }),
+    prisma.task.groupBy({
+      by: ["epicId"],
+      where: { epic: { projectId }, status: "DONE" },
+      _count: { id: true },
+    }),
   ]);
 
   if (!project || project.ownerId !== userId) return null;
 
-  const totalsMap = Object.fromEntries(epicTotals.map((r) => [r.epicId, r._count.id]));
-  const doneMap = Object.fromEntries(epicDone.map((r) => [r.epicId, r._count.id]));
+  const totalsMap = Object.fromEntries(
+    epicTotals.map((r) => [r.epicId, r._count.id]),
+  );
+  const doneMap = Object.fromEntries(
+    epicDone.map((r) => [r.epicId, r._count.id]),
+  );
 
   const tasksTotal = epicTotals.reduce((acc, r) => acc + r._count.id, 0);
-  const tasksDone  = epicDone.reduce((acc, r) => acc + r._count.id, 0);
+  const tasksDone = epicDone.reduce((acc, r) => acc + r._count.id, 0);
 
   const { epics, ...projectData } = project;
   const epicsWithProgress = epics.map((epic) => ({
@@ -211,7 +231,10 @@ export const getProjectBoard = async (
     tasksDone: doneMap[epic.id] ?? 0,
   }));
 
-  return { project: { ...projectData, tasksTotal, tasksDone }, epics: epicsWithProgress };
+  return {
+    project: { ...projectData, tasksTotal, tasksDone },
+    epics: epicsWithProgress,
+  };
 };
 
 /**
@@ -247,11 +270,12 @@ export const getProjectsStatsByUser = async (userId: number) => {
     _count: { id: true },
   });
 
-  const find = (s: ProjectStatus) => rows.find((r) => r.status === s)?._count.id ?? 0;
+  const find = (s: ProjectStatus) =>
+    rows.find((r) => r.status === s)?._count.id ?? 0;
 
   return {
-    active:    find(ProjectStatus.ACTIVE),
+    active: find(ProjectStatus.ACTIVE),
     completed: find(ProjectStatus.COMPLETED),
-    archived:  find(ProjectStatus.ARCHIVED),
+    archived: find(ProjectStatus.ARCHIVED),
   };
 };

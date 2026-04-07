@@ -12,6 +12,7 @@ import {
   updateTaskStatus,
 } from "../modules/projects/projects.controllers.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { createTask } from "../modules/tasks/tasks.controllers.js";
 
 export const router: Router = Router();
 
@@ -32,4 +33,5 @@ router.patch("/projects/:id", authMiddleware, updateProject);
 router.delete("/projects/:id", authMiddleware, deleteProject);
 
 // Tasks Routes
+router.post("/epics/:id/tasks", authMiddleware, createTask);
 router.patch("/tasks/:id/status", authMiddleware, updateTaskStatus);
