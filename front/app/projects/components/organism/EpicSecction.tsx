@@ -1,11 +1,14 @@
 import { Epic } from "@/src/projects/types/projects.types";
 import EpicDiv from "../molecules/EpicDiv";
+import { useState } from "react";
 
 interface EpicSecctionProps {
   epics: Epic[];
 }
 
 export default function EpicSecction({ epics }: EpicSecctionProps) {
+  const [showForm, setShowForm] = useState(false);
+
   return (
     <div className="flex flex-col gap-1 p-4">
       <div className="flex justify-between">
@@ -22,6 +25,7 @@ export default function EpicSecction({ epics }: EpicSecctionProps) {
           color={epic.color}
         />
       ))}
+      {showForm && <></>}
     </div>
   );
 }

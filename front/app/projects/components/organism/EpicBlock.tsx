@@ -5,7 +5,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Epic, TaskStatus } from "@/src/projects/types/projects.types";
-import NewTaskForm from "../molecules/NewTaskForm";
+import NewTaskForm from "./NewTaskForm";
 
 interface EpicBlockProps {
   epic: Epic;
@@ -89,7 +89,7 @@ export function EpicBlock({ epic, projectId, onTaskStatusChange }: EpicBlockProp
       </AnimatePresence>
 
       {showForm && (
-        <NewTaskForm
+        <NewTaskForm1
           epicId={epic.id}
           projectId={projectId}
           onClose={() => setShowForm(false)}
