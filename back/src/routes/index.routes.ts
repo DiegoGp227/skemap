@@ -13,6 +13,7 @@ import {
 } from "../modules/projects/projects.controllers.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { createTask } from "../modules/tasks/tasks.controllers.js";
+import { createEpic } from "../modules/epics/epics.controllers.js";
 
 export const router: Router = Router();
 
@@ -31,6 +32,9 @@ router.get("/projects/:id", authMiddleware, getProject);
 router.post("/projects", authMiddleware, createProject);
 router.patch("/projects/:id", authMiddleware, updateProject);
 router.delete("/projects/:id", authMiddleware, deleteProject);
+
+// Epics Routes
+router.post("/projects/:id/epics", authMiddleware, createEpic);
 
 // Tasks Routes
 router.post("/epics/:id/tasks", authMiddleware, createTask);
