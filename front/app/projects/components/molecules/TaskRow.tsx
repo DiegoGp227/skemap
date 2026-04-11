@@ -23,11 +23,6 @@ const STATUS_CONFIG: Record<
 };
 
 const PRIORITY_CONFIG: Record<TaskPriority, { label: string; color: string; icon: React.ReactNode }> = {
-  URGENT: {
-    label: "Urgent",
-    color: "text-red-500",
-    icon: <ArrowUpFromDot className="w-3 h-3" />,
-  },
   HIGH: {
     label: "High",
     color: "text-red-400",
@@ -47,15 +42,22 @@ const PRIORITY_CONFIG: Record<TaskPriority, { label: string; color: string; icon
 
 interface TaskRowProps {
   task: Task;
+  selected?: boolean;
   onStatusChange: () => void;
+  onSelect: () => void;
 }
 
-export function TaskRow({ task, onStatusChange }: TaskRowProps) {
+export function TaskRow({ task, selected, onStatusChange, onSelect }: TaskRowProps) {
   const status = STATUS_CONFIG[task.status];
   const priority = PRIORITY_CONFIG[task.priority];
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3 bg-surface border border-border rounded-md cursor-pointer hover:border-ring transition duration-200 w-196">
+    <div
+      onClick={onSelect}
+      className={`flex items-center gap-3 px-4 py-3 bg-surface border rounded-md cursor-pointer hover:border-ring transition duration-200 w-196 ${
+        selected ? "border-ring" : "border-border"
+      }`}
+    >
       <span
         onClick={(e) => {
           e.stopPropagation();

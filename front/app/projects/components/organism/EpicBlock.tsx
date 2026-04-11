@@ -4,16 +4,18 @@ import { TaskRow } from "../molecules/TaskRow";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { Epic, TaskStatus } from "@/src/projects/types/projects.types";
+import { Epic, Task, TaskStatus } from "@/src/projects/types/projects.types";
 import NewTaskForm from "./NewTaskForm";
 
 interface EpicBlockProps {
   epic: Epic;
   projectId: string;
   onTaskStatusChange: (taskId: number, currentStatus: TaskStatus) => void;
+  onTaskSelect: (task: Task) => void;
+  selectedTaskId: number | null;
 }
 
-export function EpicBlock({ epic, projectId, onTaskStatusChange }: EpicBlockProps) {
+export function EpicBlock({ epic, projectId, onTaskStatusChange, onTaskSelect, selectedTaskId }: EpicBlockProps) {
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
@@ -71,7 +73,9 @@ export function EpicBlock({ epic, projectId, onTaskStatusChange }: EpicBlockProp
                   <TaskRow
                     key={task.id}
                     task={task}
+                    selected={selectedTaskId === task.id}
                     onStatusChange={() => onTaskStatusChange(task.id, task.status)}
+                    onSelect={() => onTaskSelect(task)}
                   />
                 ))
               )}
