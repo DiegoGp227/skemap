@@ -53,7 +53,7 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:${BACK_PORT:-8000}/api/
     ports:
-      - "${FRONT_PORT:-3000}:3000"
+      - "${BACK_PORT:-8000}:8000"
     volumes:
       - ./front/app:/app/app
       - ./front/src:/app/src
