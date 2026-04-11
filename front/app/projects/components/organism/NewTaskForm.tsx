@@ -15,6 +15,7 @@ interface NewTaskFormProps {
 
 export default function NewTaskForm({ epicId, projectId, technologies, onClose }: NewTaskFormProps) {
   const [criterionInput, setCriterionInput] = useState("");
+  const [techInput, setTechInput] = useState("");
 
   const { handleCreateTask, loading } = useCreateTask(projectId);
 
@@ -60,7 +61,7 @@ export default function NewTaskForm({ epicId, projectId, technologies, onClose }
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div
-        className="w-96 bg-surface border border-border rounded-lg p-6 flex flex-col gap-5"
+        className="w-96 max-h-[90vh] overflow-y-auto bg-surface border border-border rounded-lg p-6 flex flex-col gap-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
@@ -119,30 +120,42 @@ export default function NewTaskForm({ epicId, projectId, technologies, onClose }
           </div>
 
           {/* Technologies */}
-          {technologies.length > 0 && (
-            <div className="flex flex-col gap-2">
-              <label className="text-fg-muted text-sm">Technologies</label>
-              <div className="flex flex-wrap gap-1.5">
-                {technologies.map((tech) => {
-                  const selected = selectedTechs.includes(tech);
-                  return (
-                    <button
-                      key={tech}
-                      type="button"
-                      onClick={() => toggleTech(tech)}
-                      className={`px-2.5 py-0.5 rounded-full text-xs border transition-colors duration-150 cursor-pointer ${
-                        selected
-                          ? "bg-surface border-ring text-fg"
-                          : "bg-overlay border-border text-fg-muted hover:border-ring hover:text-fg"
-                      }`}
-                    >
-                      {tech}
-                    </button>
-                  );
-                })}
-              </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-fg-muted text-sm">Technologies</label>
+            <div className="flex flex-wrap gap-1.5 bg-overlay border border-border rounded px-3 py-2 focus-within:border-ring transition-colors duration-300 min-h-10">
+              {selectedTechs.map((tech) => (
+                <span key={tech} className="flex items-center gap-1 bg-surface border border-border text-fg text-sm px-2 py-0.5 rounded-full">
+                  {tech}
+                  <button type="button" onClick={() => toggleTech(tech)} className="text-fg-muted hover:text-fg cursor-pointer">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+              <input
+                type="text"
+                value={techInput}
+                onChange={(e) => setTechInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === ",") {
+                    e.preventDefault();
+                    const v = techInput.trim();
+                    if (v && !selectedTechs.includes(v)) toggleTech(v);
+                    setTechInput("");
+                  } else if (e.key === "Backspace" && techInput === "" && selectedTechs.length > 0) {
+                    toggleTech(selectedTechs[selectedTechs.length - 1]);
+                  }
+                }}
+                onBlur={() => {
+                  const v = techInput.trim();
+                  if (v && !selectedTechs.includes(v)) toggleTech(v);
+                  setTechInput("");
+                }}
+                placeholder={selectedTechs.length === 0 ? "React, Node.js..." : ""}
+                className="flex-1 min-w-20 bg-transparent text-fg text-sm focus:outline-none placeholder:text-fg-muted"
+              />
             </div>
-          )}
+            <p className="text-fg-muted text-xs">Enter or comma to add · Backspace to remove</p>
+          </div>
 
           {/* Acceptance Criteria */}
           <div className="flex flex-col gap-2">

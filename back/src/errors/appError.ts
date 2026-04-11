@@ -77,3 +77,15 @@ export class InternalServerError extends AppError {
     super(message, 500, 'INTERNAL_ERROR', false, details);
   }
 }
+
+export class EmailAlreadyInUseError extends AppError {
+  constructor(email?: string) {
+    super('Email already in use', 409, 'EMAIL_ALREADY_IN_USE', true, { email });
+  }
+}
+
+export class InvalidCredentialsError extends AppError {
+  constructor(message: string = 'Invalid credentials') {
+    super(message, 401, 'INVALID_CREDENTIALS', true);
+  }
+}
