@@ -7,7 +7,9 @@ interface NewEpicFormProps {
 }
 
 export default function NewEpicForm({ onClose }: NewEpicFormProps) {
-  const { register } = useForm();
+  const { register, watch } = useForm();
+  const descriptionLength = watch("description")?.length ?? 0;
+  const DESCRIPTION_MAX = 500;
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <div
@@ -33,38 +35,43 @@ export default function NewEpicForm({ onClose }: NewEpicFormProps) {
           {" "}
           {/* Title */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="taskTitle" className="text-fg-muted text-sm">
+            <label htmlFor="name" className="text-fg-muted text-sm">
               Name
             </label>
             <input
               type="text"
-              id="taskTitle"
+              id="name"
               className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
               {...register("name")}
             />
           </div>
           {/* Description */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="description" className="text-fg-muted text-sm">
-              Description
-            </label>
+            <div className="flex items-center justify-between">
+              <label htmlFor="description" className="text-fg-muted text-sm">Description</label>
+              <span className={`text-xs ${descriptionLength >= DESCRIPTION_MAX ? "text-red-400" : descriptionLength >= DESCRIPTION_MAX * 0.9 ? "text-amber-400" : "text-fg-muted"}`}>
+                {descriptionLength}/{DESCRIPTION_MAX}
+              </span>
+            </div>
             <input
               type="text"
               id="description"
+              maxLength={DESCRIPTION_MAX}
               className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
               {...register("description")}
             />
           </div>
           {/* color */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="description" className="text-fg-muted text-sm">
+            <label htmlFor="color" className="text-fg-muted text-sm">
               Color
             </label>
             <input
-              type="text"
-              id="description"
-              className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
-              {...register("description")}
+              type="color"
+              id="color"
+              defaultValue="#388bfd"
+              className="w-full h-10 rounded border border-border bg-overlay cursor-pointer px-1 py-1"
+              {...register("color")}
             />
           </div>
           <button

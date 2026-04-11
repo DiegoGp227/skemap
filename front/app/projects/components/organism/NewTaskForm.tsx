@@ -24,6 +24,8 @@ export default function NewTaskForm({ epicId, projectId, technologies, onClose }
 
   const selectedTechs = watch("technologies") ?? [];
   const criteria = watch("acceptanceCriteria") ?? [];
+  const descriptionLength = watch("description")?.length ?? 0;
+  const DESCRIPTION_MAX = 1000;
 
   function toggleTech(tech: string) {
     const next = selectedTechs.includes(tech)
@@ -87,10 +89,16 @@ export default function NewTaskForm({ epicId, projectId, technologies, onClose }
 
           {/* Description */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="description" className="text-fg-muted text-sm">Description</label>
+            <div className="flex items-center justify-between">
+              <label htmlFor="description" className="text-fg-muted text-sm">Description</label>
+              <span className={`text-xs ${descriptionLength >= DESCRIPTION_MAX ? "text-red-400" : descriptionLength >= DESCRIPTION_MAX * 0.9 ? "text-amber-400" : "text-fg-muted"}`}>
+                {descriptionLength}/{DESCRIPTION_MAX}
+              </span>
+            </div>
             <input
               type="text"
               id="description"
+              maxLength={DESCRIPTION_MAX}
               className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
               {...register("description")}
             />
