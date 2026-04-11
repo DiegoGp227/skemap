@@ -2,7 +2,7 @@ import ProgressBar from "@/app/components/molecules/ProgressBar";
 
 interface InfoProjectProps {
   title: string;
-  tecnologies: string[];
+  technologies: string[];
   color: string;
   current: number;
   total: number;
@@ -10,7 +10,7 @@ interface InfoProjectProps {
 
 export default function InfoProject({
   title,
-  tecnologies,
+  technologies,
   color,
   current,
   total,
@@ -27,7 +27,7 @@ export default function InfoProject({
         </span>
       </div>
       <h2 className="text-fg font-bold text-2xl flex-wrap flex ">{title}</h2>
-      <p className="text-fg-muted text-sm">{tecnologies}</p>
+      <p className="text-fg-muted text-sm">{technologies}</p>
       <ProgressBar current={current} label="Task" total={total} color={color} />
     </div>
   );

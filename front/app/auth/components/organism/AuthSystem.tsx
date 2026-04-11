@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import SelectAuthSistem from "../molecules/SelectSistem";
+import SelectAuthSystem from "../molecules/SelectSystem";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 
@@ -21,13 +21,13 @@ const variants = {
   }),
 };
 
-export default function AuthSistem() {
+export default function AuthSystem() {
   const [isLogin, setIsLogin] = useState<boolean>(true);
 
   return (
     <div className="bg-base flex-1 p-5 flex flex-col justify-evenly">
       <div className="gap-20 flex w-full justify-center">
-        <SelectAuthSistem isLogin={isLogin} setIsLogin={setIsLogin} />
+        <SelectAuthSystem isLogin={isLogin} setIsLogin={setIsLogin} />
       </div>
       <div className="text-shadow-priority-medium p-5 flex flex-col gap-7 overflow-hidden">
         <AnimatePresence mode="wait" custom={isLogin}>

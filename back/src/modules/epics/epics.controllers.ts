@@ -5,7 +5,7 @@ import {
   NotFoundError,
   ValidationError,
 } from "../../errors/appError.js";
-import { createEpicSchema } from "./epics.shemas.js";
+import { createEpicSchema } from "./epics.schemas.js";
 import { createEpic as createEpicService } from "./epics.services.js";
 
 /**

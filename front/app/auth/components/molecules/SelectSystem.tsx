@@ -1,9 +1,9 @@
-interface ISelectAuthSistemProps {
+interface ISelectAuthSystemProps {
     setIsLogin : (state: boolean)=> void;
     isLogin: boolean
 }
 
-export default function SelectAuthSistem({setIsLogin, isLogin} : ISelectAuthSistemProps) {
+export default function SelectAuthSystem({setIsLogin, isLogin} : ISelectAuthSystemProps) {
   return (
     <div className="bg-surface  flex p-1 rounded gap-2">
       <button

@@ -5,7 +5,7 @@ import {
   NotFoundError,
   ValidationError,
 } from "../../errors/appError.js";
-import { createTaskSchema } from "./tasks.shemas.js";
+import { createTaskSchema } from "./tasks.schemas.js";
 import { createTask as createTaskService } from "./tasks.services.js";
 
 /**

@@ -2,7 +2,7 @@
 
 import { use, useState } from "react";
 import LateralBar from "../components/organism/LateralBar";
-import ProjectSistem from "../components/organism/ProjectSistem";
+import ProjectSystem from "../components/organism/ProjectSystem";
 import { TaskStatus } from "@/src/projects/types/projects.types";
 import useProjectBoard from "@/src/projects/hooks/useProjectBoard";
 
@@ -28,7 +28,7 @@ export default function ProjectPage({ params }: Props) {
         project={project}
         epics={epics}
       />
-      <ProjectSistem
+      <ProjectSystem
         id={id}
         epics={epics}
         technologies={project.technologies}

@@ -5,7 +5,7 @@ import {
 } from "@/src/projects/types/projects.types";
 import FilterProject from "../molecules/FilterProject";
 import InfoProject from "../molecules/InfoProject";
-import EpicSecction from "./EpicSecction";
+import EpicSection from "./EpicSection";
 
 interface LateralBarProps {
   taskStatus: TaskStatus[];
@@ -23,14 +23,14 @@ export default function LateralBar({
   return (
     <section className="h-full max-w-72">
       <InfoProject
-        tecnologies={project.technologies}
+        technologies={project.technologies}
         title={project.name}
         color={project.color}
         current={project.tasksDone}
         total={project.tasksTotal}
       />
       <FilterProject taskStatus={taskStatus} setTaskStatus={setTaskStatus} />
-      <EpicSecction epics={epics} projectId={project.id.toString()} />
+      <EpicSection epics={epics} projectId={project.id.toString()} />
     </section>
   );
 }

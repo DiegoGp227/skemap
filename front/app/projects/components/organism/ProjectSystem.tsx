@@ -5,7 +5,7 @@ import { Epic, TaskStatus } from "@/src/projects/types/projects.types";
 import { EpicBlock } from "./EpicBlock";
 import { TaskDetailPanel } from "./TaskDetailPanel";
 
-interface ProjectSistemProps {
+interface ProjectSystemProps {
   id: string;
   epics: Epic[];
   technologies: string[];
@@ -13,7 +13,7 @@ interface ProjectSistemProps {
   onTaskStatusSet: (taskId: number, status: TaskStatus) => void;
 }
 
-export default function ProjectSistem({ id, epics, technologies, onTaskStatusChange, onTaskStatusSet }: ProjectSistemProps) {
+export default function ProjectSystem({ id, epics, technologies, onTaskStatusChange, onTaskStatusSet }: ProjectSystemProps) {
   const [selected, setSelected] = useState<{ taskId: number; epicId: number } | null>(null);
 
   // Siempre derivado del array — se actualiza solo cuando SWR muta

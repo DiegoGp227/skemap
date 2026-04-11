@@ -3,12 +3,12 @@ import EpicDiv from "../molecules/EpicDiv";
 import { useState } from "react";
 import NewEpicForm from "./NewEpicForm";
 
-interface EpicSecctionProps {
+interface EpicSectionProps {
   epics: Epic[];
   projectId: string;
 }
 
-export default function EpicSecction({ epics, projectId }: EpicSecctionProps) {
+export default function EpicSection({ epics, projectId }: EpicSectionProps) {
   const [showForm, setShowForm] = useState(false);
 
   return (

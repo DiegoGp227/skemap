@@ -5,7 +5,7 @@ import {
   ValidationError,
 } from "../../errors/appError";
 import { createUser, validateUser } from "./auth.services";
-import { loginSchema, signupSchema } from "./auth.shema";
+import { loginSchema, signupSchema } from "./auth.schema";
 
 /**
  * @route POST /signup

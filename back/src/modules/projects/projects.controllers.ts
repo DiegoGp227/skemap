@@ -16,7 +16,7 @@ import {
   deleteProject as deleteProjectService,
   updateTaskStatus as updateTaskStatusService,
 } from "./projects.services";
-import { createProjectSchema, getProjectBoardSchema, getProjectsSchema, updateProjectSchema, updateTaskStatusSchema } from "./projects.shema";
+import { createProjectSchema, getProjectBoardSchema, getProjectsSchema, updateProjectSchema, updateTaskStatusSchema } from "./projects.schema";
 
 // El middleware de auth ya verificó el token antes de llegar aquí.
 // req.user está garantizado en todas estas rutas.

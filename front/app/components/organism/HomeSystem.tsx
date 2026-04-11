@@ -5,7 +5,7 @@ import { useState } from "react";
 import useProjects from "@/src/home/hooks/useProjects";
 import NewProjectForm from "./NewProjectForm";
 
-export default function HomeSistem() {
+export default function HomeSystem() {
   const [status, setStatus] = useState<string>("all");
   const [search, setSearch] = useState<string>("");
   const [newProjectForm, setNewProjectForm] = useState<boolean>(false);
