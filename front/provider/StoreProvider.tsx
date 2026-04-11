@@ -41,6 +41,16 @@ export const SWRProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isClient, pathname, router]);
 
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      store.dispatch.auth.clearAuth();
+      router.replace("/auth");
+    };
+
+    window.addEventListener("app:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("app:unauthorized", handleUnauthorized);
+  }, [router]);
+
   if (!isClient) {
     return null;
   }
