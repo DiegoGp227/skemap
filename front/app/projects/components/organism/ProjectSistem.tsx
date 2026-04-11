@@ -1,22 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { Epic, Task, TaskStatus } from "@/src/projects/types/projects.types";
+import { Epic, TaskStatus } from "@/src/projects/types/projects.types";
 import { EpicBlock } from "./EpicBlock";
 import { TaskDetailPanel } from "./TaskDetailPanel";
 
 interface ProjectSistemProps {
   id: string;
   epics: Epic[];
+  technologies: string[];
   onTaskStatusChange: (taskId: number, currentStatus: TaskStatus) => void;
+  onTaskStatusSet: (taskId: number, status: TaskStatus) => void;
 }
 
-export default function ProjectSistem({ id, epics, onTaskStatusChange }: ProjectSistemProps) {
-  const [selectedTask, setSelectedTask] = useState<{ task: Task; epic: Epic } | null>(null);
+export default function ProjectSistem({ id, epics, technologies, onTaskStatusChange, onTaskStatusSet }: ProjectSistemProps) {
+  const [selected, setSelected] = useState<{ taskId: number; epicId: number } | null>(null);
 
-  function handleTaskSelect(task: Task, epic: Epic) {
-    setSelectedTask((prev) =>
-      prev?.task.id === task.id ? null : { task, epic }
+  // Siempre derivado del array — se actualiza solo cuando SWR muta
+  const selectedEpic = selected ? epics.find((e) => e.id === selected.epicId) ?? null : null;
+  const selectedTask = selected ? selectedEpic?.tasks.find((t) => t.id === selected.taskId) ?? null : null;
+
+  function handleTaskSelect(taskId: number, epicId: number) {
+    setSelected((prev) =>
+      prev?.taskId === taskId ? null : { taskId, epicId }
     );
   }
 
@@ -28,18 +34,20 @@ export default function ProjectSistem({ id, epics, onTaskStatusChange }: Project
             key={epic.id}
             epic={epic}
             projectId={id}
+            technologies={technologies}
             onTaskStatusChange={onTaskStatusChange}
-            onTaskSelect={(task) => handleTaskSelect(task, epic)}
-            selectedTaskId={selectedTask?.task.id ?? null}
+            onTaskSelect={(task) => handleTaskSelect(task.id, epic.id)}
+            selectedTaskId={selected?.taskId ?? null}
           />
         ))}
       </main>
 
       <TaskDetailPanel
-        task={selectedTask?.task ?? null}
-        epicColor={selectedTask?.epic.color}
-        epicName={selectedTask?.epic.name}
-        onClose={() => setSelectedTask(null)}
+        task={selectedTask}
+        epicColor={selectedEpic?.color}
+        epicName={selectedEpic?.name}
+        onStatusChange={onTaskStatusSet}
+        onClose={() => setSelected(null)}
       />
     </>
   );

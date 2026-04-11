@@ -17,5 +17,5 @@ export function updateTaskStatus(
   taskId: number,
   status: TaskStatus
 ): Promise<{ task: Task }> {
-  return patchFetcher<{ task: Task }>(`/tasks/${taskId}/status`, { status });
+  return patchFetcher<{ task: Task }>(`tasks/${taskId}/status`, { status });
 }

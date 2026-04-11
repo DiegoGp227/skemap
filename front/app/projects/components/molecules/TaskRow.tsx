@@ -1,44 +1,7 @@
 "use client";
 
-import { Task, TaskPriority, TaskStatus } from "@/src/projects/types/projects.types";
-import { ArrowDownToDot, ArrowUpFromDot, Minus } from "lucide-react";
-import React from "react";
-
-const STATUS_CONFIG: Record<
-  TaskStatus,
-  { label: string; bg: string; text: string }
-> = {
-  TODO: { label: "To Do", bg: "bg-overlay", text: "text-fg-muted" },
-  IN_PROGRESS: {
-    label: "In Progress",
-    bg: "bg-blue-950",
-    text: "text-blue-400",
-  },
-  IN_REVIEW: {
-    label: "In Review",
-    bg: "bg-purple-950",
-    text: "text-purple-400",
-  },
-  DONE: { label: "Done", bg: "bg-green-950", text: "text-green-400" },
-};
-
-const PRIORITY_CONFIG: Record<TaskPriority, { label: string; color: string; icon: React.ReactNode }> = {
-  HIGH: {
-    label: "High",
-    color: "text-red-400",
-    icon: <ArrowUpFromDot className="w-3 h-3" />,
-  },
-  MEDIUM: {
-    label: "Medium",
-    color: "text-amber-400",
-    icon: <Minus className="w-3 h-3" />,
-  },
-  LOW: {
-    label: "Low",
-    color: "text-fg-muted",
-    icon: <ArrowDownToDot className="w-3 h-3" />,
-  },
-};
+import { Task, TaskStatus } from "@/src/projects/types/projects.types";
+import { PRIORITY_CONFIG, STATUS_CONFIG } from "../config/taskConfig";
 
 interface TaskRowProps {
   task: Task;
@@ -48,7 +11,7 @@ interface TaskRowProps {
 }
 
 export function TaskRow({ task, selected, onStatusChange, onSelect }: TaskRowProps) {
-  const status = STATUS_CONFIG[task.status];
+  const status   = STATUS_CONFIG[task.status];
   const priority = PRIORITY_CONFIG[task.priority];
 
   return (
@@ -59,13 +22,8 @@ export function TaskRow({ task, selected, onStatusChange, onSelect }: TaskRowPro
       }`}
     >
       <span
-        onClick={(e) => {
-          e.stopPropagation();
-          onStatusChange();
-        }}
-        className={`shrink-0 px-2 py-0.5 text-xs font-semibold rounded cursor-pointer select-none
-          ${status.bg} ${status.text} min-w-21 text-center
-          hover:opacity-75 transition-opacity duration-150`}
+        onClick={(e) => { e.stopPropagation(); onStatusChange(); }}
+        className={`shrink-0 px-2 py-0.5 text-xs font-semibold rounded cursor-pointer select-none min-w-21 text-center hover:opacity-75 transition-opacity duration-150 ${status.bg} ${status.text}`}
       >
         {status.label}
       </span>
@@ -78,9 +36,7 @@ export function TaskRow({ task, selected, onStatusChange, onSelect }: TaskRowPro
           {new Date(task.dueDate).toLocaleDateString()}
         </span>
       )}
-      <span
-        className={`flex items-center gap-1 text-xs font-semibold shrink-0 ${priority.color}`}
-      >
+      <span className={`flex items-center gap-1 text-xs font-semibold shrink-0 ${priority.color}`}>
         {priority.icon}
         {priority.label}
       </span>

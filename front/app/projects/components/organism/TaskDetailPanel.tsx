@@ -1,36 +1,20 @@
 "use client";
 
-import { Task, TaskPriority, TaskStatus } from "@/src/projects/types/projects.types";
+import { Task, TaskStatus } from "@/src/projects/types/projects.types";
+import { PRIORITY_CONFIG, STATUS_CONFIG } from "../config/taskConfig";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ArrowUpFromDot, ArrowDownToDot, Minus } from "lucide-react";
-
-const STATUS_CONFIG: Record<TaskStatus, { label: string; bg: string; text: string }> = {
-  TODO:        { label: "To Do",       bg: "bg-overlay",      text: "text-fg-muted"   },
-  IN_PROGRESS: { label: "In Progress", bg: "bg-blue-950",     text: "text-blue-400"   },
-  IN_REVIEW:   { label: "In Review",   bg: "bg-purple-950",   text: "text-purple-400" },
-  DONE:        { label: "Done",        bg: "bg-green-950",    text: "text-green-400"  },
-};
-
-const PRIORITY_CONFIG: Record<TaskPriority, { label: string; color: string; icon: React.ReactNode }> = {
-  HIGH:   { label: "High",   color: "text-red-400",   icon: <ArrowUpFromDot   className="w-3 h-3" /> },
-  MEDIUM: { label: "Medium", color: "text-amber-400", icon: <Minus            className="w-3 h-3" /> },
-  LOW:    { label: "Low",    color: "text-fg-muted",  icon: <ArrowDownToDot   className="w-3 h-3" /> },
-};
-
-// Fake data to fill missing fields
-const FAKE_STACK = ["React", "TypeScript", "PostgreSQL", "Express"];
-const FAKE_DESC =
-  "This task covers the implementation and integration of the feature described above. Ensure all acceptance criteria are met before marking as done.";
+import { X } from "lucide-react";
 
 interface TaskDetailPanelProps {
   task: Task | null;
   epicColor?: string;
   epicName?: string;
+  onStatusChange: (taskId: number, status: TaskStatus) => void;
   onClose: () => void;
 }
 
-export function TaskDetailPanel({ task, epicColor, epicName, onClose }: TaskDetailPanelProps) {
-  const status   = task ? STATUS_CONFIG[task.status]   : null;
+export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onClose }: TaskDetailPanelProps) {
+  const status = task ? STATUS_CONFIG[task.status] : null;
   const priority = task ? PRIORITY_CONFIG[task.priority] : null;
 
   return (
@@ -55,7 +39,7 @@ export function TaskDetailPanel({ task, epicColor, epicName, onClose }: TaskDeta
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-            className="fixed top-0 right-0 h-full w-[380px] z-50 flex flex-col bg-base border-l border-border overflow-y-auto"
+            className="fixed top-0 right-0 h-full w-95 z-50 flex flex-col bg-base border-l border-border overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-start justify-between p-6 pb-4">
@@ -74,19 +58,23 @@ export function TaskDetailPanel({ task, epicColor, epicName, onClose }: TaskDeta
             </div>
 
             {/* Title */}
-            <h2 className="px-6 text-base font-bold text-fg leading-snug mb-4">
+            <h2 className="px-6 font-bold text-fg leading-snug mb-4">
               {task.title}
             </h2>
 
             {/* Meta badges */}
             <div className="px-6 flex flex-wrap gap-2 mb-5">
               {status && (
-                <span className={`px-2.5 py-1 rounded text-xs font-semibold ${status.bg} ${status.text}`}>
+                <span
+                  className={`px-2.5 py-1 rounded text-xs font-semibold ${status.bg} ${status.text}`}
+                >
                   {status.label}
                 </span>
               )}
               {priority && (
-                <span className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs font-semibold bg-overlay ${priority.color}`}>
+                <span
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs font-semibold bg-overlay ${priority.color}`}
+                >
                   {priority.icon}
                   {priority.label}
                 </span>
@@ -106,22 +94,28 @@ export function TaskDetailPanel({ task, epicColor, epicName, onClose }: TaskDeta
                 Description
               </p>
               <p className="text-sm text-fg-subtle leading-relaxed">
-                {task.description ?? FAKE_DESC}
+                {task.description}
               </p>
             </section>
 
             {/* Acceptance criteria */}
-            {(task.acceptanceCriteria?.length > 0) && (
+            {task.acceptanceCriteria?.length > 0 && (
               <section className="px-6 mb-5">
-                <p className="text-[11px] tracking-widest uppercase text-fg-muted mb-3">
-                  Acceptance criteria
-                </p>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-[11px] tracking-widest uppercase text-fg-muted">
+                    Acceptance criteria
+                  </p>
+                  <span className="text-[11px] text-fg-muted">
+                    {task.acceptanceCriteria.filter((ac) => ac.done).length}/{task.acceptanceCriteria.length}
+                  </span>
+                </div>
                 <ul className="flex flex-col gap-2">
                   {task.acceptanceCriteria.map((ac) => (
-                    <li key={ac.id} className="flex items-start gap-2">
-                      <span className={`mt-0.5 shrink-0 text-xs ${ac.done ? "text-green-500" : "text-fg-muted"}`}>
-                        {ac.done ? "✓" : "○"}
-                      </span>
+                    <li key={ac.id} className="flex items-start gap-2.5">
+                      <span
+                        className={`mt-1 shrink-0 w-1.5 h-1.5 rounded-full ${!ac.done ? "bg-border" : ""}`}
+                        style={ac.done ? { backgroundColor: epicColor } : undefined}
+                      />
                       <span className={`text-sm leading-snug ${ac.done ? "line-through text-fg-muted" : "text-fg-subtle"}`}>
                         {ac.text}
                       </span>
@@ -131,26 +125,54 @@ export function TaskDetailPanel({ task, epicColor, epicName, onClose }: TaskDeta
               </section>
             )}
 
-            {/* Stack (fake) */}
+            {task.technologies.length > 0 && (
+              <section className="px-6 mb-5">
+                <p className="text-[11px] tracking-widest uppercase text-fg-muted mb-3">
+                  Stack
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {task.technologies.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2.5 py-0.5 rounded-full text-xs bg-surface border border-border text-fg-muted"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Status selector */}
             <section className="px-6 mb-5">
               <p className="text-[11px] tracking-widest uppercase text-fg-muted mb-3">
-                Stack
+                Change status
               </p>
-              <div className="flex flex-wrap gap-2">
-                {FAKE_STACK.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2.5 py-0.5 rounded-full text-xs bg-surface border border-border text-fg-muted"
-                  >
-                    {tag}
-                  </span>
-                ))}
+              <div className="grid grid-cols-2 gap-2">
+                {(Object.entries(STATUS_CONFIG) as [TaskStatus, typeof STATUS_CONFIG[TaskStatus]][]).map(([key, cfg]) => {
+                  const isActive = task.status === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => onStatusChange(task.id, key)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold border transition-all duration-150 cursor-pointer
+                        ${isActive
+                          ? `${cfg.bg} ${cfg.text} border-transparent`
+                          : "bg-transparent border-border text-fg-muted hover:border-ring hover:text-fg"
+                        }`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isActive ? cfg.text.replace("text-", "bg-") : "bg-fg-muted"}`} />
+                      {cfg.label}
+                    </button>
+                  );
+                })}
               </div>
             </section>
 
             <hr className="border-border mx-6 mb-5" />
 
-            {/* Timestamps (fake-ish) */}
+            {/* Details */}
             <section className="px-6 pb-8">
               <p className="text-[11px] tracking-widest uppercase text-fg-muted mb-3">
                 Details

@@ -10,12 +10,13 @@ import NewTaskForm from "./NewTaskForm";
 interface EpicBlockProps {
   epic: Epic;
   projectId: string;
+  technologies: string[];
   onTaskStatusChange: (taskId: number, currentStatus: TaskStatus) => void;
   onTaskSelect: (task: Task) => void;
   selectedTaskId: number | null;
 }
 
-export function EpicBlock({ epic, projectId, onTaskStatusChange, onTaskSelect, selectedTaskId }: EpicBlockProps) {
+export function EpicBlock({ epic, projectId, technologies, onTaskStatusChange, onTaskSelect, selectedTaskId }: EpicBlockProps) {
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
@@ -96,6 +97,7 @@ export function EpicBlock({ epic, projectId, onTaskStatusChange, onTaskSelect, s
         <NewTaskForm
           epicId={epic.id}
           projectId={projectId}
+          technologies={technologies}
           onClose={() => setShowForm(false)}
         />
       )}

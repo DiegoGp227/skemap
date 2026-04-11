@@ -12,10 +12,10 @@ interface Props {
 
 export default function ProjectPage({ params }: Props) {
   const { id } = use(params);
-  const [taskStatus, setTaskStatus] = useState<TaskStatus[]>([]);
-  const { project, epics, loading, advanceTaskStatus } = useProjectBoard(
+  const [statusFilter, setStatusFilter] = useState<TaskStatus[]>([]);
+  const { project, epics, loading, advanceTaskStatus, setTaskStatus } = useProjectBoard(
     id,
-    taskStatus,
+    statusFilter,
   );
 
   if (loading || !project) return null;
@@ -23,15 +23,17 @@ export default function ProjectPage({ params }: Props) {
   return (
     <div className="flex w-full h-full">
       <LateralBar
-        taskStatus={taskStatus}
-        setTaskStatus={setTaskStatus}
+        taskStatus={statusFilter}
+        setTaskStatus={setStatusFilter}
         project={project}
         epics={epics}
       />
       <ProjectSistem
         id={id}
         epics={epics}
+        technologies={project.technologies}
         onTaskStatusChange={advanceTaskStatus}
+        onTaskStatusSet={setTaskStatus}
       />
     </div>
   );

@@ -14,4 +14,4 @@ export const projectBoardURL = (id: string) =>
   new URL(`projects/${id}/board`, BaseURL);
 
 export const taskURL = (id: string) =>
-  new URL(`/tasks/${id}/status`, BaseURL);
+  new URL(`tasks/${id}/status`, BaseURL);

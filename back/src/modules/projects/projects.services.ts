@@ -195,6 +195,11 @@ export const getProjectBoard = async (
                 ? { status: { in: statusFilter } }
                 : undefined,
               orderBy: { order: "asc" },
+              include: {
+                acceptanceCriteria: {
+                  orderBy: { order: "asc" },
+                },
+              },
             },
           },
         },

@@ -20,6 +20,7 @@ export interface Task {
   order: number;
   dueDate: string | null;
   epicId: number;
+  technologies: string[];
   createdAt: string;
   updatedAt: string;
   acceptanceCriteria: AcceptanceCriteria[];
