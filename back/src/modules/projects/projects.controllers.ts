@@ -1,10 +1,6 @@
 import { Request, Response } from "express";
-import {
-  AppError,
-  InternalServerError,
-  NotFoundError,
-  ValidationError,
-} from "../../errors/appError";
+import { NotFoundError, ValidationError } from "../../errors/appError.js";
+import { asyncHandler } from "../../middlewares/asyncHandler.js";
 import { ProjectStatus } from "@prisma/client";
 import {
   getProjectsByUser,
@@ -15,11 +11,21 @@ import {
   updateProject as updateProjectService,
   deleteProject as deleteProjectService,
   updateTaskStatus as updateTaskStatusService,
-} from "./projects.services";
-import { createProjectSchema, getProjectBoardSchema, getProjectsSchema, updateProjectSchema, updateTaskStatusSchema } from "./projects.schema";
+} from "./projects.services.js";
+import {
+  createProjectSchema,
+  getProjectBoardSchema,
+  getProjectsSchema,
+  updateProjectSchema,
+  updateTaskStatusSchema,
+} from "./projects.schema.js";
 
-// El middleware de auth ya verificó el token antes de llegar aquí.
-// req.user está garantizado en todas estas rutas.
+// Traduce el string del frontend al enum de Prisma.
+const STATUS_MAP: Record<string, ProjectStatus> = {
+  active: ProjectStatus.ACTIVE,
+  complete: ProjectStatus.COMPLETED,
+  filed: ProjectStatus.ARCHIVED,
+};
 
 /**
  * @route   GET /projects
@@ -27,55 +33,26 @@ import { createProjectSchema, getProjectBoardSchema, getProjectsSchema, updatePr
  * @access  Private
  * @returns { projects: Project[] }
  */
-// Traduce el string del frontend al enum de Prisma.
-// El controller es el responsable de esta conversión, no el servicio.
-const STATUS_MAP: Record<string, ProjectStatus> = {
-  active: ProjectStatus.ACTIVE,
-  complete: ProjectStatus.COMPLETED,
-  filed: ProjectStatus.ARCHIVED,
-};
+export const getProjects = asyncHandler(async (req: Request, res: Response) => {
+  const validation = getProjectsSchema.safeParse(req.query);
 
-export const getProjects = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    // Validamos los query params con Zod igual que hacemos con el body.
-    // req.query contiene los params de la URL: /projects?status=active&search=foo
-    const validation = getProjectsSchema.safeParse(req.query);
-
-    if (!validation.success) {
-      const errors = validation.error.issues.reduce(
-        (acc: Record<string, string>, err) => {
-          acc[err.path.join(".")] = err.message;
-          return acc;
-        },
-        {},
-      );
-      throw new ValidationError("Invalid query params", errors);
-    }
-
-    const { status, search } = validation.data;
-
-    // Si status es "all" o no viene, pasamos undefined → el servicio no filtra.
-    // Si tiene valor lo traducimos al enum antes de pasarlo al servicio.
-    const prismaStatus = status && status !== "all" ? STATUS_MAP[status] : undefined;
-
-    const projects = await getProjectsByUser(req.user!.id, prismaStatus, search);
-
-    res.status(200).json({ projects });
-  } catch (error) {
-    console.error("❌ Error in getProjects:", error);
-
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json(error.toJSON());
-      return;
-    }
-
-    const internalError = new InternalServerError("Internal server error");
-    res.status(internalError.statusCode).json(internalError.toJSON());
+  if (!validation.success) {
+    const errors = validation.error.issues.reduce<Record<string, string>>(
+      (acc, err) => {
+        acc[err.path.join(".")] = err.message;
+        return acc;
+      },
+      {},
+    );
+    throw new ValidationError("Invalid query params", errors);
   }
-};
+
+  const { status, search } = validation.data;
+  const prismaStatus = status && status !== "all" ? STATUS_MAP[status] : undefined;
+  const projects = await getProjectsByUser(req.user!.id, prismaStatus, search);
+
+  res.status(200).json({ projects });
+});
 
 /**
  * @route   GET /projects/:id
@@ -84,36 +61,21 @@ export const getProjects = async (
  * @access  Private
  * @returns { project }
  */
-export const getProject = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const projectId = parseInt(req.params.id as string);
+export const getProject = asyncHandler(async (req: Request, res: Response) => {
+  const projectId = parseInt(req.params.id as string);
 
-    if (isNaN(projectId)) {
-      throw new NotFoundError("Project");
-    }
-
-    const project = await getProjectById(projectId, req.user!.id);
-
-    if (!project) {
-      throw new NotFoundError("Project");
-    }
-
-    res.status(200).json({ project });
-  } catch (error) {
-    console.error("❌ Error in getProject:", error);
-
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json(error.toJSON());
-      return;
-    }
-
-    const internalError = new InternalServerError("Internal server error");
-    res.status(internalError.statusCode).json(internalError.toJSON());
+  if (isNaN(projectId)) {
+    throw new NotFoundError("Project");
   }
-};
+
+  const project = await getProjectById(projectId, req.user!.id);
+
+  if (!project) {
+    throw new NotFoundError("Project");
+  }
+
+  res.status(200).json({ project });
+});
 
 /**
  * @route   POST /projects
@@ -122,40 +84,24 @@ export const getProject = async (
  * @access  Private
  * @returns { project }
  */
+export const createProject = asyncHandler(async (req: Request, res: Response) => {
+  const validation = createProjectSchema.safeParse(req.body);
 
-export const createProject = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const validation = createProjectSchema.safeParse(req.body);
-
-    if (!validation.success) {
-      const errors = validation.error.issues.reduce(
-        (acc: Record<string, string>, err) => {
-          acc[err.path.join(".")] = err.message;
-          return acc;
-        },
-        {},
-      );
-      throw new ValidationError("Validation errors", errors);
-    }
-
-    const project = await createProjectService(validation.data, req.user!.id);
-
-    res.status(201).json({ project });
-  } catch (error) {
-    console.error("❌ Error in createProject:", error);
-
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json(error.toJSON());
-      return;
-    }
-
-    const internalError = new InternalServerError("Internal server error");
-    res.status(internalError.statusCode).json(internalError.toJSON());
+  if (!validation.success) {
+    const errors = validation.error.issues.reduce<Record<string, string>>(
+      (acc, err) => {
+        acc[err.path.join(".")] = err.message;
+        return acc;
+      },
+      {},
+    );
+    throw new ValidationError("Validation errors", errors);
   }
-};
+
+  const project = await createProjectService(validation.data, req.user!.id);
+
+  res.status(201).json({ project });
+});
 
 /**
  * @route   PATCH /projects/:id
@@ -165,50 +111,30 @@ export const createProject = async (
  * @access  Private
  * @returns { project }
  */
+export const updateProject = asyncHandler(async (req: Request, res: Response) => {
+  const projectId = parseInt(req.params.id as string);
 
-export const updateProject = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const projectId = parseInt(req.params.id as string);
-
-    if (isNaN(projectId)) {
-      throw new NotFoundError("Project");
-    }
-
-    const validation = updateProjectSchema.safeParse(req.body);
-
-    if (!validation.success) {
-      const errors = validation.error.issues.reduce(
-        (acc: Record<string, string>, err) => {
-          acc[err.path.join(".")] = err.message;
-          return acc;
-        },
-        {},
-      );
-      throw new ValidationError("Validation errors", errors);
-    }
-
-    const project = await updateProjectService(
-      projectId,
-      req.user!.id,
-      validation.data,
-    );
-
-    res.status(200).json({ project });
-  } catch (error) {
-    console.error("❌ Error in updateProject:", error);
-
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json(error.toJSON());
-      return;
-    }
-
-    const internalError = new InternalServerError("Internal server error");
-    res.status(internalError.statusCode).json(internalError.toJSON());
+  if (isNaN(projectId)) {
+    throw new NotFoundError("Project");
   }
-};
+
+  const validation = updateProjectSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    const errors = validation.error.issues.reduce<Record<string, string>>(
+      (acc, err) => {
+        acc[err.path.join(".")] = err.message;
+        return acc;
+      },
+      {},
+    );
+    throw new ValidationError("Validation errors", errors);
+  }
+
+  const project = await updateProjectService(projectId, req.user!.id, validation.data);
+
+  res.status(200).json({ project });
+});
 
 /**
  * @route   DELETE /projects/:id
@@ -217,32 +143,17 @@ export const updateProject = async (
  * @access  Private
  * @returns 204 No Content
  */
-export const deleteProject = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const projectId = parseInt(req.params.id as string);
+export const deleteProject = asyncHandler(async (req: Request, res: Response) => {
+  const projectId = parseInt(req.params.id as string);
 
-    if (isNaN(projectId)) {
-      throw new NotFoundError("Project");
-    }
-
-    await deleteProjectService(projectId, req.user!.id);
-
-    res.status(204).send();
-  } catch (error) {
-    console.error("❌ Error in deleteProject:", error);
-
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json(error.toJSON());
-      return;
-    }
-
-    const internalError = new InternalServerError("Internal server error");
-    res.status(internalError.statusCode).json(internalError.toJSON());
+  if (isNaN(projectId)) {
+    throw new NotFoundError("Project");
   }
-};
+
+  await deleteProjectService(projectId, req.user!.id);
+
+  res.status(204).send();
+});
 
 /**
  * @route   GET /projects/:id/board
@@ -250,51 +161,36 @@ export const deleteProject = async (
  * @params  id — ID del proyecto
  * @query   status? — uno o varios: TODO | IN_PROGRESS | IN_REVIEW | DONE
  * @access  Private
- * @returns { project, epics: Epic[] } cada epic incluye su array de tasks
+ * @returns { project, epics: Epic[] }
  */
-export const getProjectBoard = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const projectId = parseInt(req.params.id as string);
+export const getProjectBoard = asyncHandler(async (req: Request, res: Response) => {
+  const projectId = parseInt(req.params.id as string);
 
-    if (isNaN(projectId)) {
-      throw new NotFoundError("Project");
-    }
-
-    const validation = getProjectBoardSchema.safeParse(req.query);
-
-    if (!validation.success) {
-      const errors = validation.error.issues.reduce(
-        (acc: Record<string, string>, err) => {
-          acc[err.path.join(".")] = err.message;
-          return acc;
-        },
-        {},
-      );
-      throw new ValidationError("Invalid query params", errors);
-    }
-
-    const board = await getProjectBoardService(projectId, req.user!.id, validation.data.status);
-
-    if (!board) {
-      throw new NotFoundError("Project");
-    }
-
-    res.status(200).json(board);
-  } catch (error) {
-    console.error("❌ Error in getProjectBoard:", error);
-
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json(error.toJSON());
-      return;
-    }
-
-    const internalError = new InternalServerError("Internal server error");
-    res.status(internalError.statusCode).json(internalError.toJSON());
+  if (isNaN(projectId)) {
+    throw new NotFoundError("Project");
   }
-};
+
+  const validation = getProjectBoardSchema.safeParse(req.query);
+
+  if (!validation.success) {
+    const errors = validation.error.issues.reduce<Record<string, string>>(
+      (acc, err) => {
+        acc[err.path.join(".")] = err.message;
+        return acc;
+      },
+      {},
+    );
+    throw new ValidationError("Invalid query params", errors);
+  }
+
+  const board = await getProjectBoardService(projectId, req.user!.id, validation.data.status);
+
+  if (!board) {
+    throw new NotFoundError("Project");
+  }
+
+  res.status(200).json(board);
+});
 
 /**
  * @route   PATCH /tasks/:id/status
@@ -304,45 +200,30 @@ export const getProjectBoard = async (
  * @access  Private
  * @returns { task }
  */
-export const updateTaskStatus = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const taskId = parseInt(req.params.id as string);
+export const updateTaskStatus = asyncHandler(async (req: Request, res: Response) => {
+  const taskId = parseInt(req.params.id as string);
 
-    if (isNaN(taskId)) {
-      throw new NotFoundError("Task");
-    }
-
-    const validation = updateTaskStatusSchema.safeParse(req.body);
-
-    if (!validation.success) {
-      const errors = validation.error.issues.reduce(
-        (acc: Record<string, string>, err) => {
-          acc[err.path.join(".")] = err.message;
-          return acc;
-        },
-        {},
-      );
-      throw new ValidationError("Validation errors", errors);
-    }
-
-    const task = await updateTaskStatusService(taskId, req.user!.id, validation.data.status);
-
-    res.status(200).json({ task });
-  } catch (error) {
-    console.error("❌ Error in updateTaskStatus:", error);
-
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json(error.toJSON());
-      return;
-    }
-
-    const internalError = new InternalServerError("Internal server error");
-    res.status(internalError.statusCode).json(internalError.toJSON());
+  if (isNaN(taskId)) {
+    throw new NotFoundError("Task");
   }
-};
+
+  const validation = updateTaskStatusSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    const errors = validation.error.issues.reduce<Record<string, string>>(
+      (acc, err) => {
+        acc[err.path.join(".")] = err.message;
+        return acc;
+      },
+      {},
+    );
+    throw new ValidationError("Validation errors", errors);
+  }
+
+  const task = await updateTaskStatusService(taskId, req.user!.id, validation.data.status);
+
+  res.status(200).json({ task });
+});
 
 /**
  * @route   GET /projects/stats
@@ -350,22 +231,7 @@ export const updateTaskStatus = async (
  * @access  Private
  * @returns { stats: { active: number, completed: number, archived: number } }
  */
-export const getProjectsStats = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const stats = await getProjectsStatsByUser(req.user!.id);
-    res.status(200).json({ stats });
-  } catch (error) {
-    console.error("❌ Error in getProjectsStats:", error);
-
-    if (error instanceof AppError) {
-      res.status(error.statusCode).json(error.toJSON());
-      return;
-    }
-
-    const internalError = new InternalServerError("Internal server error");
-    res.status(internalError.statusCode).json(internalError.toJSON());
-  }
-};
+export const getProjectsStats = asyncHandler(async (req: Request, res: Response) => {
+  const stats = await getProjectsStatsByUser(req.user!.id);
+  res.status(200).json({ stats });
+});

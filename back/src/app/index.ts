@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { router } from "../routes/index.routes";
+import { errorHandler } from "../middlewares/errorHandler.middleware";
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8000;
 
@@ -34,6 +35,7 @@ app.use((req, res) => {
     message: "Escribe bien mono estupido",
   });
 });
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🔥 Hello world, I am listening on port ${PORT}`);
