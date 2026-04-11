@@ -89,7 +89,7 @@ export function EpicBlock({ epic, projectId, onTaskStatusChange }: EpicBlockProp
       </AnimatePresence>
 
       {showForm && (
-        <NewTaskForm1
+        <NewTaskForm
           epicId={epic.id}
           projectId={projectId}
           onClose={() => setShowForm(false)}
