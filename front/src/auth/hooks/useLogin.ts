@@ -19,13 +19,7 @@ export function useLogin() {
     try {
       const response = await loginService(payload);
 
-      // Guardamos la respuesta completa en el store global (token + userInfo).
-      // El persist de easy-peasy sincroniza esto con localStorage automáticamente.
       setAuth(response);
-
-      // Guardamos el token por separado bajo la key "token" para que
-      // el interceptor de apiClient pueda leerlo directamente.
-      localStorage.setItem("token", response.token);
 
       setState({ user: response.userInfo, loading: false, error: null });
     } catch (err) {

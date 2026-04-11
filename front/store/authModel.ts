@@ -15,6 +15,7 @@ const authModel: AuthModel = {
   setAuth: action((state, payload: IAuthResponse) => {
     state.user = payload;
     state.isAuthenticated = true;
+    localStorage.setItem("token", payload.token);
   }),
 
   clearAuth: action((state) => {

@@ -20,11 +20,7 @@ export function useSignUp() {
     try {
       const response = await SignUpService(payload);
 
-      // Persistimos token + userInfo en el store (easy-peasy lo sincroniza con localStorage)
       setAuth(response);
-
-      // Token separado para que el interceptor de apiClient lo lea directamente
-      localStorage.setItem("token", response.token);
 
       setState({ user: response.userInfo, loading: false, error: null });
     } catch (err) {
