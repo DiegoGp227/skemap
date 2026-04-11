@@ -1,19 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Epic, TaskStatus } from "@/src/projects/types/projects.types";
+import { Epic } from "@/src/projects/types/projects.types";
 import { EpicBlock } from "./EpicBlock";
 import { TaskDetailPanel } from "./TaskDetailPanel";
+import { useBoardContext } from "../../context/ProjectBoardContext";
 
 interface ProjectSystemProps {
-  id: string;
   epics: Epic[];
-  technologies: string[];
-  onTaskStatusChange: (taskId: number, currentStatus: TaskStatus) => void;
-  onTaskStatusSet: (taskId: number, status: TaskStatus) => void;
 }
 
-export default function ProjectSystem({ id, epics, technologies, onTaskStatusChange, onTaskStatusSet }: ProjectSystemProps) {
+export default function ProjectSystem({ epics }: ProjectSystemProps) {
+  const { onTaskStatusSet } = useBoardContext();
   const [selected, setSelected] = useState<{ taskId: number; epicId: number } | null>(null);
 
   // Siempre derivado del array — se actualiza solo cuando SWR muta
@@ -33,9 +31,6 @@ export default function ProjectSystem({ id, epics, technologies, onTaskStatusCha
           <EpicBlock
             key={epic.id}
             epic={epic}
-            projectId={id}
-            technologies={technologies}
-            onTaskStatusChange={onTaskStatusChange}
             onTaskSelect={(task) => handleTaskSelect(task.id, epic.id)}
             selectedTaskId={selected?.taskId ?? null}
           />

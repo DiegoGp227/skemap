@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import { router } from "../routes/index.routes";
 import { errorHandler } from "../middlewares/errorHandler.middleware";
+import { logger } from "../utils/logger";
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8000;
 
@@ -38,5 +39,5 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`🔥 Hello world, I am listening on port ${PORT}`);
+  logger.info(`Server listening on port ${PORT}`);
 });

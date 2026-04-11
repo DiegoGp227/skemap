@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { BaseURL } from "../constants/urls";
+import { logger } from "../utils/logger";
 
 const apiClient = axios.create({
   baseURL: BaseURL,
@@ -27,7 +28,7 @@ apiClient.interceptors.response.use(
       localStorage.removeItem("token");
       window.location.href = "/auth";
     }
-    console.error("API Error:", error);
+    logger.error("API Error", error);
     return Promise.reject(error);
   }
 );

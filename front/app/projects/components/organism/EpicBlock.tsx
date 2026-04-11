@@ -4,19 +4,18 @@ import { TaskRow } from "../molecules/TaskRow";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { Epic, Task, TaskStatus } from "@/src/projects/types/projects.types";
+import { Epic, Task } from "@/src/projects/types/projects.types";
 import NewTaskForm from "./NewTaskForm";
+import { useBoardContext } from "../../context/ProjectBoardContext";
 
 interface EpicBlockProps {
   epic: Epic;
-  projectId: string;
-  technologies: string[];
-  onTaskStatusChange: (taskId: number, currentStatus: TaskStatus) => void;
   onTaskSelect: (task: Task) => void;
   selectedTaskId: number | null;
 }
 
-export function EpicBlock({ epic, projectId, technologies, onTaskStatusChange, onTaskSelect, selectedTaskId }: EpicBlockProps) {
+export function EpicBlock({ epic, onTaskSelect, selectedTaskId }: EpicBlockProps) {
+  const { projectId, technologies, onTaskStatusChange } = useBoardContext();
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
 

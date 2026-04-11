@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../../lib/prisma";
+import { logger } from "../../utils/logger";
 
 const dbCheck = async (req: Request, res: Response) => {
   try {
@@ -9,7 +10,7 @@ const dbCheck = async (req: Request, res: Response) => {
       message: "Connected to PostgreSQL successfully"
     });
   } catch (error) {
-    console.error("❌ Error connecting to PostgreSQL:", error);
+    logger.error("Error connecting to PostgreSQL", error);
     res.status(500).json({
       status: "error",
       message: "Could not connect to the database"
