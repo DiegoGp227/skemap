@@ -27,8 +27,8 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
     const validation = createTaskSchema.safeParse(req.body);
 
     if (!validation.success) {
-      const errors = validation.error.issues.reduce(
-        (acc: Record<string, string>, err: { path: (string | number)[]; message: string }) => {
+      const errors = validation.error.issues.reduce<Record<string, string>>(
+        (acc, err) => {
           acc[err.path.join(".")] = err.message;
           return acc;
         },
