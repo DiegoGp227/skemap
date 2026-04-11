@@ -6,6 +6,7 @@ import {
 } from "../../errors/appError.js";
 import prisma from "../../db/prisma.js";
 import { IAuthUser, ICreateUser, IUserResponse } from "./auth.types";
+import { env } from "../../config/env.js";
 
 export const createUser = async (
   userData: ICreateUser,
@@ -39,10 +40,8 @@ export const createUser = async (
 
   const token = jwt.sign(
     { id: user.id, email: user.email },
-    process.env.JWT_SECRET || "default_secret",
-    {
-      expiresIn: (process.env.TOKEN_EXPIRATION || "1h") as string,
-    } as SignOptions,
+    env.JWT_SECRET,
+    { expiresIn: env.TOKEN_EXPIRATION as SignOptions["expiresIn"] },
   );
 
   return { user, token };
@@ -79,10 +78,8 @@ export const validateUser = async (
 
   const token = jwt.sign(
     { id: user.id, email: user.email },
-    process.env.JWT_SECRET || "default_secret",
-    {
-      expiresIn: (process.env.TOKEN_EXPIRATION || "1h") as string,
-    } as SignOptions,
+    env.JWT_SECRET,
+    { expiresIn: env.TOKEN_EXPIRATION as SignOptions["expiresIn"] },
   );
 
   return { user, token };

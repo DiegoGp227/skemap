@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { InternalServerError, UnauthorizedError } from "../errors/appError";
+import { env } from "../config/env.js";
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   try {
@@ -14,7 +15,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || "default_secret",
+      env.JWT_SECRET,
     ) as { id: number; email: string };
 
     req.user = {
