@@ -30,7 +30,7 @@ export default function LateralBar({
         total={project.tasksTotal}
       />
       <FilterProject taskStatus={taskStatus} setTaskStatus={setTaskStatus} />
-      <EpicSecction epics={epics} />
+      <EpicSecction epics={epics} projectId={project.id.toString()} />
     </section>
   );
 }

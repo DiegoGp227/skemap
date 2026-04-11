@@ -71,3 +71,13 @@ export interface CreateTaskDto {
 export interface CreateTaskResponse {
   task: Task;
 }
+
+export interface CreateEpicDto {
+  name: string;
+  description?: string;
+  color: string;
+}
+
+export interface CreateEpicResponse {
+  epic: Epic;
+}

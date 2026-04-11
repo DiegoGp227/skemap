@@ -5,9 +5,10 @@ import NewEpicForm from "./NewEpicForm";
 
 interface EpicSecctionProps {
   epics: Epic[];
+  projectId: string;
 }
 
-export default function EpicSecction({ epics }: EpicSecctionProps) {
+export default function EpicSecction({ epics, projectId }: EpicSecctionProps) {
   const [showForm, setShowForm] = useState(false);
 
   return (
@@ -16,9 +17,7 @@ export default function EpicSecction({ epics }: EpicSecctionProps) {
         <p className="font-bold">Epics</p>
         <button
           className="border px-3 rounded border-border text-fg-muted hover:bg-surface transition duration-500 hover:text-fg"
-          onClick={() => {
-            setShowForm(true);
-          }}
+          onClick={() => setShowForm(true)}
         >
           New Epic
         </button>
@@ -31,7 +30,7 @@ export default function EpicSecction({ epics }: EpicSecctionProps) {
           color={epic.color}
         />
       ))}
-      {showForm && <NewEpicForm onClose={() => setShowForm(false)} />}
+      {showForm && <NewEpicForm projectId={projectId} onClose={() => setShowForm(false)} />}
     </div>
   );
 }
