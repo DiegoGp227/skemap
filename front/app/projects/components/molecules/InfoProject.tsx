@@ -36,7 +36,18 @@ export default function InfoProject({
         </span>
       </div>
       <h2 className="text-fg font-bold text-2xl">{title}</h2>
-      <p className="text-fg-muted text-sm">{technologies}</p>
+      {technologies.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {technologies.map((tech) => (
+            <span
+              key={tech}
+              className="px-2 py-0.5 text-xs bg-overlay border border-border text-fg-muted rounded-full"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+      )}
       <ProgressBar current={current} label="Task" total={total} color={color} />
       <ActionsButtons
         onEdit={onOpenEditForm}

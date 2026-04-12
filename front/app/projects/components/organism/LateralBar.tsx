@@ -23,8 +23,8 @@ export default function LateralBar({
   return (
     <section className="h-full max-w-72">
       <InfoProject
-        technologies={project.technologies}
         title={project.name}
+        technologies={project.technologies}
         color={project.color}
         current={project.tasksDone}
         total={project.tasksTotal}
