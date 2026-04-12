@@ -24,7 +24,6 @@ export default function HomeSystem() {
       {newProjectForm && (
         <ProjectForm
           onClose={() => setNewProjectForm(false)}
-          isNewProject={true}
         />
       )}
     </>

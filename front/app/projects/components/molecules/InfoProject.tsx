@@ -2,6 +2,7 @@ import ProgressBar from "@/app/components/molecules/ProgressBar";
 import ActionsButtons from "./ActionsButtons";
 import { useBoardContext } from "../../context/ProjectBoardContext";
 import ModalDelete from "../atoms/ModalDelete";
+import useDeleteProject from "@/src/projects/hooks/useDeleteProject";
 import { useState } from "react";
 
 interface InfoProjectProps {
@@ -19,8 +20,9 @@ export default function InfoProject({
   current,
   total,
 }: InfoProjectProps) {
-  const { onOpenEditForm } = useBoardContext();
+  const { onOpenEditForm, projectId } = useBoardContext();
   const [isDelete, setIsDelete] = useState<boolean>(false);
+  const { loading, handleDeleteProject } = useDeleteProject(Number(projectId));
 
   return (
     <div className="flex flex-col gap-3 p-4">
@@ -42,7 +44,13 @@ export default function InfoProject({
           setIsDelete(true);
         }}
       />
-      {isDelete && <ModalDelete />}
+      {isDelete && (
+        <ModalDelete
+          onConfirm={handleDeleteProject}
+          onClose={() => setIsDelete(false)}
+          loading={loading}
+        />
+      )}
     </div>
   );
 }
