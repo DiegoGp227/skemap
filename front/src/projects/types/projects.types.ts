@@ -82,6 +82,12 @@ export interface CreateEpicResponse {
   epic: Epic;
 }
 
+export interface UpdateEpicDto {
+  name?: string;
+  description?: string;
+  color?: string;
+}
+
 export interface UpdateTaskDto {
   title?: string;
   description?: string;

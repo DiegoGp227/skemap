@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { Epic, Task } from "@/src/projects/types/projects.types";
 import NewTaskForm from "./NewTaskForm";
+import EditEpicForm from "./EditEpicForm";
 import { useBoardContext } from "../../context/ProjectBoardContext";
 import ActionsButtons from "../molecules/ActionsButtons";
 
@@ -23,6 +24,7 @@ export function EpicBlock({
   const { projectId, technologies, onTaskStatusChange } = useBoardContext();
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -70,7 +72,7 @@ export function EpicBlock({
           </span>
         </button>
 
-        <ActionsButtons onDelete={() => {}} onEdit={() => {}} compact />
+        <ActionsButtons onEdit={() => setShowEditForm(true)} onDelete={() => {}} compact />
       </div>
 
       <AnimatePresence initial={false}>
@@ -120,6 +122,13 @@ export function EpicBlock({
           projectId={projectId}
           technologies={technologies}
           onClose={() => setShowForm(false)}
+        />
+      )}
+
+      {showEditForm && (
+        <EditEpicForm
+          epic={epic}
+          onClose={() => setShowEditForm(false)}
         />
       )}
     </div>
