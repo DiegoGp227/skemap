@@ -12,5 +12,5 @@ export interface UpdateTaskInput {
   description?: string;
   priority?: "LOW" | "MEDIUM" | "HIGH";
   technologies?: string[];
-  dueDate?: string;
+  acceptanceCriteria?: string[];
 }

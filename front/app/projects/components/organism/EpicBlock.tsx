@@ -7,6 +7,7 @@ import { ChevronRight } from "lucide-react";
 import { Epic, Task } from "@/src/projects/types/projects.types";
 import NewTaskForm from "./NewTaskForm";
 import { useBoardContext } from "../../context/ProjectBoardContext";
+import ActionsButtons from "../molecules/ActionsButtons";
 
 interface EpicBlockProps {
   epic: Epic;
@@ -14,18 +15,33 @@ interface EpicBlockProps {
   selectedTaskId: number | null;
 }
 
-export function EpicBlock({ epic, onTaskSelect, selectedTaskId }: EpicBlockProps) {
+export function EpicBlock({
+  epic,
+  onTaskSelect,
+  selectedTaskId,
+}: EpicBlockProps) {
   const { projectId, technologies, onTaskStatusChange } = useBoardContext();
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   return (
     <div>
-      <div className="w-200 flex items-center gap-2">
+      <div
+        className="w-200 flex items-center gap-2 bg-surface border rounded-lg transition-colors duration-200"
+        style={{
+          borderLeftWidth: 3,
+          borderLeftColor: epic.color,
+          borderTopColor: hovered ? epic.color : "transparent",
+          borderRightColor: hovered ? epic.color : "transparent",
+          borderBottomColor: hovered ? epic.color : "transparent",
+        }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
         <button
           onClick={() => setOpen((o) => !o)}
-          className="flex-1 flex items-center gap-3 px-4 py-3 bg-surface border border-border rounded-lg hover:border-ring transition duration-200 text-left"
-          style={{ borderLeftWidth: 3, borderLeftColor: epic.color }}
+          className="flex-1 flex items-center gap-3 px-4 py-3 transition duration-200 text-left"
         >
           <motion.span
             animate={{ rotate: open ? 90 : 0 }}
@@ -54,14 +70,7 @@ export function EpicBlock({ epic, onTaskSelect, selectedTaskId }: EpicBlockProps
           </span>
         </button>
 
-        {/* TODO: edit epic */}
-        <button className="px-2 py-1 text-[10px] font-bold bg-red-900/40 text-red-400 border border-red-700/50 rounded cursor-not-allowed shrink-0">
-          EDIT
-        </button>
-        {/* TODO: delete epic */}
-        <button className="px-2 py-1 text-[10px] font-bold bg-red-900/40 text-red-400 border border-red-700/50 rounded cursor-not-allowed shrink-0">
-          DELETE
-        </button>
+        <ActionsButtons onDelete={() => {}} onEdit={() => {}} compact />
       </div>
 
       <AnimatePresence initial={false}>
@@ -85,7 +94,9 @@ export function EpicBlock({ epic, onTaskSelect, selectedTaskId }: EpicBlockProps
                     key={task.id}
                     task={task}
                     selected={selectedTaskId === task.id}
-                    onStatusChange={() => onTaskStatusChange(task.id, task.status)}
+                    onStatusChange={() =>
+                      onTaskStatusChange(task.id, task.status)
+                    }
                     onSelect={() => onTaskSelect(task)}
                   />
                 ))

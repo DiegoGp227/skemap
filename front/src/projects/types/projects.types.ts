@@ -82,6 +82,14 @@ export interface CreateEpicResponse {
   epic: Epic;
 }
 
+export interface UpdateTaskDto {
+  title?: string;
+  description?: string;
+  priority?: TaskPriority;
+  technologies?: string[];
+  acceptanceCriteria?: string[];
+}
+
 export interface UpdateProjectDto {
   name?: string;
   color?: string;

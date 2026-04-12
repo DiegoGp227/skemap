@@ -1,0 +1,217 @@
+"use client";
+
+import useUpdateTask from "@/src/projects/hooks/useUpdateTask";
+import { Task, UpdateTaskDto } from "@/src/projects/types/projects.types";
+import { useBoardContext } from "../../context/ProjectBoardContext";
+import { X, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+
+interface EditTaskFormProps {
+  task: Task;
+  onClose: () => void;
+}
+
+type FormValues = {
+  title: string;
+  description: string;
+  priority: "LOW" | "MEDIUM" | "HIGH";
+  technologies: string[];
+  criteria: { text: string }[];
+};
+
+export default function EditTaskForm({ task, onClose }: EditTaskFormProps) {
+  const { projectId } = useBoardContext();
+  const { loading, error, handleUpdateTask } = useUpdateTask(task.id, projectId);
+  const [techInput, setTechInput] = useState("");
+  const [criterionInput, setCriterionInput] = useState("");
+
+  const { handleSubmit, register, setValue, watch, control } = useForm<FormValues>({
+    defaultValues: {
+      title: task.title,
+      description: task.description ?? "",
+      priority: task.priority,
+      technologies: task.technologies,
+      criteria: task.acceptanceCriteria.map((ac) => ({ text: ac.text })),
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({ control, name: "criteria" });
+  const selectedTechs = watch("technologies") ?? [];
+  const descriptionLength = watch("description")?.length ?? 0;
+  const DESCRIPTION_MAX = 1000;
+
+  function toggleTech(tech: string) {
+    const next = selectedTechs.includes(tech)
+      ? selectedTechs.filter((t) => t !== tech)
+      : [...selectedTechs, tech];
+    setValue("technologies", next);
+  }
+
+  function handleTechKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      const v = techInput.trim();
+      if (v && !selectedTechs.includes(v)) toggleTech(v);
+      setTechInput("");
+    } else if (e.key === "Backspace" && techInput === "" && selectedTechs.length > 0) {
+      toggleTech(selectedTechs[selectedTechs.length - 1]);
+    }
+  }
+
+  function addCriterion() {
+    const trimmed = criterionInput.trim();
+    if (!trimmed) return;
+    append({ text: trimmed });
+    setCriterionInput("");
+  }
+
+  const onSubmit = (data: FormValues) => {
+    const dto: UpdateTaskDto = {
+      title: data.title,
+      description: data.description,
+      priority: data.priority,
+      technologies: data.technologies,
+      acceptanceCriteria: data.criteria.map((c) => c.text),
+    };
+    handleUpdateTask(dto).then((success) => {
+      if (success) onClose();
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+      <div
+        className="w-96 max-h-[90vh] overflow-y-auto bg-surface border border-border rounded-lg p-6 flex flex-col gap-5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="text-fg text-lg font-semibold">Edit Task</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-fg-muted hover:text-fg cursor-pointer p-1 hover:bg-overlay rounded transition-colors duration-200"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="title" className="text-fg-muted text-sm">Title</label>
+            <input
+              id="title"
+              type="text"
+              className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
+              {...register("title")}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <label htmlFor="description" className="text-fg-muted text-sm">Description</label>
+              <span className={`text-xs ${descriptionLength >= DESCRIPTION_MAX ? "text-red-400" : descriptionLength >= DESCRIPTION_MAX * 0.9 ? "text-amber-400" : "text-fg-muted"}`}>
+                {descriptionLength}/{DESCRIPTION_MAX}
+              </span>
+            </div>
+            <input
+              id="description"
+              type="text"
+              maxLength={DESCRIPTION_MAX}
+              className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
+              {...register("description")}
+            />
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label htmlFor="priority" className="text-fg-muted text-sm">Priority</label>
+            <select
+              id="priority"
+              className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full"
+              {...register("priority")}
+            >
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-fg-muted text-sm">Technologies</label>
+            <div className="flex flex-wrap gap-1.5 bg-overlay border border-border rounded px-3 py-2 focus-within:border-ring transition-colors duration-300 min-h-10">
+              {selectedTechs.map((tech) => (
+                <span key={tech} className="flex items-center gap-1 bg-surface border border-border text-fg text-sm px-2 py-0.5 rounded-full">
+                  {tech}
+                  <button type="button" onClick={() => toggleTech(tech)} className="text-fg-muted hover:text-fg cursor-pointer">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+              <input
+                type="text"
+                value={techInput}
+                onChange={(e) => setTechInput(e.target.value)}
+                onKeyDown={handleTechKeyDown}
+                onBlur={() => {
+                  const v = techInput.trim();
+                  if (v && !selectedTechs.includes(v)) toggleTech(v);
+                  setTechInput("");
+                }}
+                placeholder={selectedTechs.length === 0 ? "React, Node.js..." : ""}
+                className="flex-1 min-w-20 bg-transparent text-fg text-sm focus:outline-none placeholder:text-fg-muted"
+              />
+            </div>
+            <p className="text-fg-muted text-xs">Enter or comma to add · Backspace to remove</p>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-fg-muted text-sm">Acceptance Criteria</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={criterionInput}
+                onChange={(e) => setCriterionInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCriterion(); } }}
+                placeholder="Add a criterion..."
+                className="bg-overlay border border-border text-fg px-3 py-2 rounded focus:outline-none focus:border-ring transition-colors duration-300 w-full text-sm"
+              />
+              <button
+                type="button"
+                onClick={addCriterion}
+                className="flex items-center px-3 py-2 bg-overlay border border-border text-fg-muted hover:text-fg hover:bg-surface rounded transition-colors duration-200 cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+            {fields.length > 0 && (
+              <ul className="flex flex-col gap-1 mt-1">
+                {fields.map((field, index) => (
+                  <li key={field.id} className="flex items-start justify-between gap-2 bg-overlay border border-border rounded px-3 py-2 text-sm text-fg">
+                    <span className="flex-1 leading-snug">{field.text}</span>
+                    <button
+                      type="button"
+                      onClick={() => remove(index)}
+                      className="text-fg-muted hover:text-fg shrink-0 cursor-pointer transition-colors duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-1 bg-interactive hover:bg-blue-500 text-white font-medium py-2 rounded transition-colors duration-300 cursor-pointer disabled:opacity-50"
+          >
+            {loading ? "Saving..." : "Save Changes"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}

@@ -4,6 +4,9 @@ import { Task, TaskStatus } from "@/src/projects/types/projects.types";
 import { PRIORITY_CONFIG, STATUS_CONFIG } from "../config/taskConfig";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
+import { useState } from "react";
+import EditTaskForm from "./EditTaskForm";
+import ActionsButtons from "../molecules/ActionsButtons";
 
 interface TaskDetailPanelProps {
   task: Task | null;
@@ -16,8 +19,10 @@ interface TaskDetailPanelProps {
 export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onClose }: TaskDetailPanelProps) {
   const status = task ? STATUS_CONFIG[task.status] : null;
   const priority = task ? PRIORITY_CONFIG[task.priority] : null;
+  const [showEditForm, setShowEditForm] = useState(false);
 
   return (
+    <>
     <AnimatePresence>
       {task && (
         <>
@@ -50,14 +55,11 @@ export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onC
                 {epicName ?? "Epic"} · #{task.id}
               </div>
               <div className="flex items-center gap-2">
-                {/* TODO: edit task */}
-                <button className="px-2 py-0.5 text-[10px] font-bold bg-red-900/40 text-red-400 border border-red-700/50 rounded cursor-not-allowed">
-                  EDIT
-                </button>
-                {/* TODO: delete task */}
-                <button className="px-2 py-0.5 text-[10px] font-bold bg-red-900/40 text-red-400 border border-red-700/50 rounded cursor-not-allowed">
-                  DELETE
-                </button>
+                <ActionsButtons
+                  compact
+                  onEdit={() => setShowEditForm(true)}
+                  onDelete={() => {}}
+                />
                 <button
                   onClick={onClose}
                   className="text-fg-muted hover:text-fg transition-colors duration-150 -mt-0.5"
@@ -211,5 +213,13 @@ export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onC
         </>
       )}
     </AnimatePresence>
+
+    {showEditForm && task && (
+      <EditTaskForm
+        task={task}
+        onClose={() => setShowEditForm(false)}
+      />
+    )}
+  </>
   );
 }

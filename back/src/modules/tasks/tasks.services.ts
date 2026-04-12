@@ -71,13 +71,23 @@ export const updateTask = async (
     throw new NotFoundError("Task");
   }
 
-  const { dueDate, ...rest } = data;
+  const { acceptanceCriteria, ...rest } = data;
 
   return prisma.task.update({
     where: { id: taskId },
     data: {
       ...rest,
-      ...(dueDate !== undefined ? { dueDate: dueDate ? new Date(dueDate) : null } : {}),
+      ...(acceptanceCriteria !== undefined
+        ? {
+            acceptanceCriteria: {
+              deleteMany: {},
+              create: acceptanceCriteria.map((text, index) => ({
+                text,
+                order: index + 1,
+              })),
+            },
+          }
+        : {}),
     },
     include: {
       acceptanceCriteria: { orderBy: { order: "asc" } },
