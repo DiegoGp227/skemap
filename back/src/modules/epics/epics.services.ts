@@ -1,6 +1,6 @@
 import prisma from "../../db/prisma.js";
 import { NotFoundError } from "../../errors/appError.js";
-import { CreateEpicInput } from "./epics.types.js";
+import { CreateEpicInput, UpdateEpicInput } from "./epics.types.js";
 
 /**
  * Crea un nuevo epic dentro de un proyecto.
@@ -31,6 +31,36 @@ export const createEpic = async (
 
   return prisma.epic.create({
     data: { ...data, projectId, order },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      color: true,
+      order: true,
+      projectId: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+};
+
+export const updateEpic = async (
+  epicId: number,
+  userId: number,
+  data: UpdateEpicInput,
+) => {
+  const epic = await prisma.epic.findUnique({
+    where: { id: epicId },
+    include: { project: { select: { ownerId: true } } },
+  });
+
+  if (!epic || epic.project.ownerId !== userId) {
+    throw new NotFoundError("Epic");
+  }
+
+  return prisma.epic.update({
+    where: { id: epicId },
+    data,
     select: {
       id: true,
       name: true,

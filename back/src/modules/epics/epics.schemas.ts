@@ -7,3 +7,7 @@ export const createEpicSchema = z.object({
 });
 
 export type CreateEpicDTO = z.infer<typeof createEpicSchema>;
+
+export const updateEpicSchema = createEpicSchema.partial();
+
+export type UpdateEpicDTO = z.infer<typeof updateEpicSchema>;
