@@ -3,7 +3,7 @@
 import { TaskRow } from "../molecules/TaskRow";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LayoutList } from "lucide-react";
 import { Epic, Task } from "@/src/projects/types/projects.types";
 import NewTaskForm from "./NewTaskForm";
 import EditEpicForm from "./EditEpicForm";
@@ -91,9 +91,10 @@ export function EpicBlock({
           >
             <div className="flex flex-col gap-1.5 pl-4 pt-2 pb-1">
               {epic.tasks.length === 0 ? (
-                <p className="text-xs text-fg-muted italic px-4 py-2">
-                  No tasks
-                </p>
+                <div className="flex items-center gap-2.5 px-4 py-3 text-fg-muted">
+                  <LayoutList className="w-3.5 h-3.5 shrink-0" />
+                  <span className="text-xs">No tasks yet — add one below.</span>
+                </div>
               ) : (
                 epic.tasks.map((task) => (
                   <TaskRow

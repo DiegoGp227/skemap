@@ -1,5 +1,6 @@
 import { Project } from "@/src/home/types/home.types";
 import ProjectDiv from "../molecules/ProjectDiv";
+import { FolderOpen } from "lucide-react";
 
 interface IProjectsSectionsProps {
   projects: Project[];
@@ -49,11 +50,17 @@ export default function ProjectsSection({
           </div>
         </div>
       ) : (
-        <div className="w-100 h-35 p-5 border-2 bg-surface border-border rounded transition duration-500 ease-in-out hover:border-ring flex flex-col gap-5 justify-center items-center">
-          <p>Projects Not Found</p>
+        <div className="flex flex-col items-center gap-4 py-20 text-center">
+          <div className="p-4 rounded-full bg-overlay border border-border">
+            <FolderOpen className="w-6 h-6 text-fg-muted" />
+          </div>
+          <div>
+            <p className="text-fg font-semibold">No projects yet</p>
+            <p className="text-fg-muted text-sm mt-1">Create your first project to get started.</p>
+          </div>
           <button
-            className="bg-blue-600 py-2 px-10 cursor-pointer rounded"
             onClick={onNewProject}
+            className="mt-1 px-4 py-2 text-sm font-medium bg-overlay border border-border text-fg-muted hover:text-fg hover:border-ring rounded transition-colors duration-200 cursor-pointer"
           >
             New Project
           </button>
