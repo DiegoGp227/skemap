@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { NotFoundError, ValidationError } from "../../errors/appError.js";
 import { asyncHandler } from "../../middlewares/asyncHandler.js";
 import { createTaskSchema, updateTaskSchema } from "./tasks.schemas.js";
-import { createTask as createTaskService, updateTask as updateTaskService } from "./tasks.services.js";
+import { createTask as createTaskService, updateTask as updateTaskService, deleteTask as deleteTaskService } from "./tasks.services.js";
 
 /**
  * @route   POST /epics/:id/tasks
@@ -68,4 +68,23 @@ export const updateTask = asyncHandler(async (req: Request, res: Response) => {
   const task = await updateTaskService(taskId, req.user!.id, validation.data);
 
   res.status(200).json({ task });
+});
+
+/**
+ * @route   DELETE /tasks/:id
+ * @headers Authorization: Bearer <token>
+ * @params  id — ID de la tarea
+ * @access  Private
+ * @returns 204 No Content
+ */
+export const deleteTask = asyncHandler(async (req: Request, res: Response) => {
+  const taskId = parseInt(req.params.id as string);
+
+  if (isNaN(taskId)) {
+    throw new NotFoundError("Task");
+  }
+
+  await deleteTaskService(taskId, req.user!.id);
+
+  res.status(204).send();
 });

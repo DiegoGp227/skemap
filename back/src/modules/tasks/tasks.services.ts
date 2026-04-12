@@ -54,6 +54,23 @@ export const createTask = async (
 };
 
 /**
+ * Elimina una tarea.
+ * Verifica que el usuario sea owner del proyecto antes de eliminar.
+ */
+export const deleteTask = async (taskId: number, userId: number) => {
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: { epic: { select: { project: { select: { ownerId: true } } } } },
+  });
+
+  if (!task || task.epic.project.ownerId !== userId) {
+    throw new NotFoundError("Task");
+  }
+
+  await prisma.task.delete({ where: { id: taskId } });
+};
+
+/**
  * Actualiza los campos de una tarea.
  * Verifica que el usuario sea owner del proyecto antes de actualizar.
  */
