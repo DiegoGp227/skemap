@@ -1,6 +1,6 @@
 import prisma from "../../db/prisma.js";
 import { NotFoundError } from "../../errors/appError.js";
-import { CreateTaskInput } from "./tasks.types.js";
+import { CreateTaskInput, UpdateTaskInput } from "./tasks.types.js";
 
 /**
  * Crea una nueva tarea dentro de un epic.
@@ -46,6 +46,38 @@ export const createTask = async (
             },
           }
         : {}),
+    },
+    include: {
+      acceptanceCriteria: { orderBy: { order: "asc" } },
+    },
+  });
+};
+
+/**
+ * Actualiza los campos de una tarea.
+ * Verifica que el usuario sea owner del proyecto antes de actualizar.
+ */
+export const updateTask = async (
+  taskId: number,
+  userId: number,
+  data: UpdateTaskInput,
+) => {
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: { epic: { select: { project: { select: { ownerId: true } } } } },
+  });
+
+  if (!task || task.epic.project.ownerId !== userId) {
+    throw new NotFoundError("Task");
+  }
+
+  const { dueDate, ...rest } = data;
+
+  return prisma.task.update({
+    where: { id: taskId },
+    data: {
+      ...rest,
+      ...(dueDate !== undefined ? { dueDate: dueDate ? new Date(dueDate) : null } : {}),
     },
     include: {
       acceptanceCriteria: { orderBy: { order: "asc" } },

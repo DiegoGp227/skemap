@@ -6,3 +6,11 @@ export interface CreateTaskInput {
   dueDate?: string;
   acceptanceCriteria?: string[];
 }
+
+export interface UpdateTaskInput {
+  title?: string;
+  description?: string;
+  priority?: "LOW" | "MEDIUM" | "HIGH";
+  technologies?: string[];
+  dueDate?: string;
+}

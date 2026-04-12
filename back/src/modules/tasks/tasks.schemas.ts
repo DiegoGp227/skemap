@@ -15,3 +15,7 @@ export const createTaskSchema = z.object({
 });
 
 export type CreateTaskDTO = z.infer<typeof createTaskSchema>;
+
+export const updateTaskSchema = createTaskSchema.omit({ acceptanceCriteria: true }).partial();
+
+export type UpdateTaskDTO = z.infer<typeof updateTaskSchema>;
