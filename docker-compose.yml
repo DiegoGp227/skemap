@@ -18,30 +18,17 @@ services:
     build:
       context: ./back
       dockerfile: Dockerfile
-    restart: unless-stopped
+   restart: unless-stopped
     env_file:
       - .env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-skemap}
-      PORT: ${BACK_PORT:-8000}
+      PORT: 8000
     ports:
-      - "${BACK_PORT:-8000}:8000"
-    volumes:
-      - ./back/src:/app/src
-      - ./back/prisma:/app/prisma
+      - "${BACK_PORT:-4004}:8000"
     depends_on:
       db:
         condition: service_healthy
-    develop:
-      watch:
-        - action: sync
-          path: ./back/src
-          target: /app/src
-        - action: sync
-          path: ./back/prisma
-          target: /app/prisma
-        - action: rebuild
-          path: ./back/package.json
 
   front:
     build:
@@ -51,27 +38,11 @@ services:
     env_file:
       - .env
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:${BACK_PORT:-8000}/api/
+      NEXT_PUBLIC_API_URL: http://back:8000/api/
     ports:
-      - "${BACK_PORT:-8000}:8000"
-    volumes:
-      - ./front/app:/app/app
-      - ./front/src:/app/src
-      - ./front/store:/app/store
-      - ./front/provider:/app/provider
-      - ./front/style:/app/style
+      - "${FRONT_PORT:-5004}:3000"
     depends_on:
       - back
-    develop:
-      watch:
-        - action: sync
-          path: ./front/app
-          target: /app/app
-        - action: sync
-          path: ./front/src
-          target: /app/src
-        - action: rebuild
-          path: ./front/package.json
 
 volumes:
   postgres_data:
