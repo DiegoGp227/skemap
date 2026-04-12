@@ -8,6 +8,7 @@ interface ProjectBoardContextValue {
   technologies: string[];
   onTaskStatusChange: (taskId: number, currentStatus: TaskStatus) => void;
   onTaskStatusSet: (taskId: number, status: TaskStatus) => void;
+  onOpenEditForm: () => void;
 }
 
 const ProjectBoardContext = createContext<ProjectBoardContextValue | null>(null);

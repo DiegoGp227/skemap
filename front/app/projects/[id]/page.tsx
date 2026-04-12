@@ -6,6 +6,7 @@ import ProjectSystem from "../components/organism/ProjectSystem";
 import { TaskStatus } from "@/src/projects/types/projects.types";
 import useProjectBoard from "@/src/projects/hooks/useProjectBoard";
 import { ProjectBoardProvider } from "../context/ProjectBoardContext";
+import ProjectForm from "@/app/components/organism/ProjectForm";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -14,10 +15,9 @@ interface Props {
 export default function ProjectPage({ params }: Props) {
   const { id } = use(params);
   const [statusFilter, setStatusFilter] = useState<TaskStatus[]>([]);
-  const { project, epics, loading, advanceTaskStatus, setTaskStatus } = useProjectBoard(
-    id,
-    statusFilter,
-  );
+  const [editProject, setEditProject] = useState<boolean>(false);
+  const { project, epics, loading, advanceTaskStatus, setTaskStatus } =
+    useProjectBoard(id, statusFilter);
 
   if (loading || !project) return null;
 
@@ -27,6 +27,7 @@ export default function ProjectPage({ params }: Props) {
       technologies={project.technologies}
       onTaskStatusChange={advanceTaskStatus}
       onTaskStatusSet={setTaskStatus}
+      onOpenEditForm={()=>{setEditProject(true)}}
     >
       <div className="flex w-full h-full">
         <LateralBar
@@ -37,6 +38,12 @@ export default function ProjectPage({ params }: Props) {
         />
         <ProjectSystem epics={epics} />
       </div>
+      {editProject && (
+        <ProjectForm
+          initialData={project}
+          onClose={() => setEditProject(false)}
+        />
+      )}
     </ProjectBoardProvider>
   );
 }

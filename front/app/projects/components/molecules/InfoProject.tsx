@@ -1,4 +1,8 @@
 import ProgressBar from "@/app/components/molecules/ProgressBar";
+import ActionsButtons from "./ActionsButtons";
+import { useBoardContext } from "../../context/ProjectBoardContext";
+import ModalDelete from "../atoms/ModalDelete";
+import { useState } from "react";
 
 interface InfoProjectProps {
   title: string;
@@ -15,6 +19,9 @@ export default function InfoProject({
   current,
   total,
 }: InfoProjectProps) {
+  const { onOpenEditForm } = useBoardContext();
+  const [isDelete, setIsDelete] = useState<boolean>(false);
+
   return (
     <div className="flex flex-col gap-3 p-4">
       <div className="flex items-center gap-3">
@@ -26,9 +33,16 @@ export default function InfoProject({
           Project
         </span>
       </div>
-      <h2 className="text-fg font-bold text-2xl flex-wrap flex ">{title}</h2>
+      <h2 className="text-fg font-bold text-2xl">{title}</h2>
       <p className="text-fg-muted text-sm">{technologies}</p>
       <ProgressBar current={current} label="Task" total={total} color={color} />
+      <ActionsButtons
+        onEdit={onOpenEditForm}
+        onDelete={() => {
+          setIsDelete(true);
+        }}
+      />
+      {isDelete && <ModalDelete />}
     </div>
   );
 }
