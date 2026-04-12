@@ -44,6 +44,19 @@ export const createEpic = async (
   });
 };
 
+export const deleteEpic = async (epicId: number, userId: number) => {
+  const epic = await prisma.epic.findUnique({
+    where: { id: epicId },
+    include: { project: { select: { ownerId: true } } },
+  });
+
+  if (!epic || epic.project.ownerId !== userId) {
+    throw new NotFoundError("Epic");
+  }
+
+  await prisma.epic.delete({ where: { id: epicId } });
+};
+
 export const updateEpic = async (
   epicId: number,
   userId: number,

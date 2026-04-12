@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { NotFoundError, ValidationError } from "../../errors/appError.js";
 import { asyncHandler } from "../../middlewares/asyncHandler.js";
 import { createEpicSchema, updateEpicSchema } from "./epics.schemas.js";
-import { createEpic as createEpicService, updateEpic as updateEpicService } from "./epics.services.js";
+import { createEpic as createEpicService, updateEpic as updateEpicService, deleteEpic as deleteEpicService } from "./epics.services.js";
 
 /**
  * @route   POST /projects/:id/epics
@@ -68,4 +68,23 @@ export const updateEpic = asyncHandler(async (req: Request, res: Response) => {
   const epic = await updateEpicService(epicId, req.user!.id, validation.data);
 
   res.status(200).json({ epic });
+});
+
+/**
+ * @route   DELETE /epics/:id
+ * @headers Authorization: Bearer <token>
+ * @params  id — ID del epic
+ * @access  Private
+ * @returns 204 No Content
+ */
+export const deleteEpic = asyncHandler(async (req: Request, res: Response) => {
+  const epicId = parseInt(req.params.id as string);
+
+  if (isNaN(epicId)) {
+    throw new NotFoundError("Epic");
+  }
+
+  await deleteEpicService(epicId, req.user!.id);
+
+  res.status(204).send();
 });
