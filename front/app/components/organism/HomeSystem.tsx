@@ -3,7 +3,7 @@ import FilterForm from "@/app/components/organism/FilterForm";
 import ProjectsSection from "./ProjectsSection";
 import { useState } from "react";
 import useProjects from "@/src/home/hooks/useProjects";
-import NewProjectForm from "./NewProjectForm";
+import ProjectForm from "./ProjectForm";
 
 export default function HomeSystem() {
   const [status, setStatus] = useState<string>("all");
@@ -22,7 +22,7 @@ export default function HomeSystem() {
         onNewProject={() => setNewProjectForm(true)}
       />
       {newProjectForm && (
-        <NewProjectForm
+        <ProjectForm
           onClose={() => setNewProjectForm(false)}
           isNewProject={true}
         />

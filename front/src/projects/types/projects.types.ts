@@ -81,3 +81,11 @@ export interface CreateEpicDto {
 export interface CreateEpicResponse {
   epic: Epic;
 }
+
+export interface UpdateProjectDto {
+  name?: string;
+  color?: string;
+  description?: string;
+  technologies?: string[];
+  status?: "ACTIVE" | "COMPLETED" | "ARCHIVED";
+}

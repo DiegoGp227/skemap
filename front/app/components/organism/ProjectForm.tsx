@@ -1,34 +1,45 @@
 "use client";
 
 import useCreateProject from "@/src/home/hooks/useCreateProject";
+import useUpdateProject from "@/src/projects/hooks/useUpdateProject";
 import { CreateProjectDto } from "@/src/home/types/home.types";
+import { BoardProject } from "@/src/projects/types/projects.types";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-interface INewProjectFormProps {
+interface IProjectFormProps {
   onClose: () => void;
-  isNewProject: boolean;
+  initialData?: BoardProject;
 }
 
-export default function NewProjectForm({
-  onClose,
-  isNewProject,
-}: INewProjectFormProps) {
+export default function ProjectForm({ onClose, initialData }: IProjectFormProps) {
+  const isEditing = !!initialData;
+
   const {
     handleSubmit,
     register,
     setValue,
     watch,
     formState: { errors },
-  } = useForm<CreateProjectDto>({ defaultValues: { technologies: [] } });
+  } = useForm<CreateProjectDto>({
+    defaultValues: {
+      name: initialData?.name ?? "",
+      color: initialData?.color ?? "#388bfd",
+      description: initialData?.description ?? "",
+      technologies: initialData?.technologies ?? [],
+    },
+  });
 
-  const { error, handleCreateProject } = useCreateProject();
+  const { error: createError, handleCreateProject } = useCreateProject();
+  const { error: updateError, handleUpdateProject } = useUpdateProject(initialData?.id ?? 0);
+
+  const error = isEditing ? updateError : createError;
+
   const [techInput, setTechInput] = useState("");
 
   const descriptionLength = watch("description")?.length ?? 0;
   const DESCRIPTION_MAX = 500;
-
   const technologies = watch("technologies") ?? [];
 
   function addTech() {
@@ -52,7 +63,9 @@ export default function NewProjectForm({
   }
 
   const onSubmit = async (dto: CreateProjectDto) => {
-    const success = await handleCreateProject(dto);
+    const success = isEditing
+      ? await handleUpdateProject(dto)
+      : await handleCreateProject(dto);
     if (success) onClose();
   };
 
@@ -67,7 +80,7 @@ export default function NewProjectForm({
       >
         <div className="flex items-center justify-between">
           <h2 className="text-fg text-lg font-semibold">
-            {isNewProject ? "New Project" : "Update Project"}
+            {isEditing ? "Edit Project" : "New Project"}
           </h2>
           <button
             onClick={onClose}
@@ -101,7 +114,6 @@ export default function NewProjectForm({
             <input
               type="color"
               id="color"
-              defaultValue="#388bfd"
               className="w-full h-10 rounded border border-border bg-overlay cursor-pointer px-1 py-1"
               {...register("color")}
             />
@@ -166,7 +178,7 @@ export default function NewProjectForm({
             type="submit"
             className="mt-1 bg-interactive hover:bg-blue-500 text-white font-medium py-2 rounded transition-colors duration-300 cursor-pointer"
           >
-            Create Project
+            {isEditing ? "Save Changes" : "Create Project"}
           </button>
         </form>
       </div>

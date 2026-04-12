@@ -1,6 +1,6 @@
 import { projectBoardURL } from "@/src/shared/constants/urls";
-import { fetcher, patchFetcher } from "@/utils/utils";
-import { Task, TaskStatus, ProjectBoardResponse } from "../types/projects.types";
+import { fetcher, patchFetcher, deleteFetcher } from "@/utils/utils";
+import { Task, TaskStatus, ProjectBoardResponse, UpdateProjectDto, BoardProject } from "../types/projects.types";
 
 export function getProjectBoard(
   id: string,
@@ -9,6 +9,17 @@ export function getProjectBoard(
   const url = projectBoardURL(id);
   statuses.forEach((s) => url.searchParams.append("status", s));
   return fetcher<ProjectBoardResponse>(url.toString());
+}
+
+export function updateProject(
+  projectId: number,
+  dto: UpdateProjectDto
+): Promise<{ project: BoardProject }> {
+  return patchFetcher<{ project: BoardProject }>(`projects/${projectId}`, dto);
+}
+
+export function deleteProject(projectId: number): Promise<void> {
+  return deleteFetcher(`projects/${projectId}`);
 }
 
 // Actualiza el status de una tarea en el backend.
