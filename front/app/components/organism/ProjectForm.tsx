@@ -2,11 +2,19 @@
 
 import useCreateProject from "@/src/home/hooks/useCreateProject";
 import useUpdateProject from "@/src/projects/hooks/useUpdateProject";
-import { CreateProjectDto } from "@/src/home/types/home.types";
+import { CreateProjectDto, ProjectStatus } from "@/src/home/types/home.types";
 import { BoardProject } from "@/src/projects/types/projects.types";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+
+type FormValues = CreateProjectDto & { status?: ProjectStatus };
+
+const STATUS_OPTIONS: { value: ProjectStatus; label: string; activeClass: string }[] = [
+  { value: "ACTIVE",    label: "Active",    activeClass: "bg-[#14532d] border-[#4ade80]/40 text-[#4ade80]" },
+  { value: "COMPLETED", label: "Completed", activeClass: "bg-[#1e3a5f] border-[#60a5fa]/40 text-[#60a5fa]" },
+  { value: "ARCHIVED",  label: "Archived",  activeClass: "bg-overlay border-border text-fg-muted"          },
+];
 
 interface IProjectFormProps {
   onClose: () => void;
@@ -22,12 +30,13 @@ export default function ProjectForm({ onClose, initialData }: IProjectFormProps)
     setValue,
     watch,
     formState: { errors },
-  } = useForm<CreateProjectDto>({
+  } = useForm<FormValues>({
     defaultValues: {
       name: initialData?.name ?? "",
       color: initialData?.color ?? "#388bfd",
       description: initialData?.description ?? "",
       technologies: initialData?.technologies ?? [],
+      status: initialData?.status ?? "ACTIVE",
     },
   });
 
@@ -41,6 +50,7 @@ export default function ProjectForm({ onClose, initialData }: IProjectFormProps)
   const descriptionLength = watch("description")?.length ?? 0;
   const DESCRIPTION_MAX = 500;
   const technologies = watch("technologies") ?? [];
+  const status = watch("status");
 
   function addTech() {
     const value = techInput.trim();
@@ -62,7 +72,7 @@ export default function ProjectForm({ onClose, initialData }: IProjectFormProps)
     }
   }
 
-  const onSubmit = async (dto: CreateProjectDto) => {
+  const onSubmit = async (dto: FormValues) => {
     const success = isEditing
       ? await handleUpdateProject(dto)
       : await handleCreateProject(dto);
@@ -171,6 +181,28 @@ export default function ProjectForm({ onClose, initialData }: IProjectFormProps)
             </div>
             <p className="text-fg-muted text-xs">Enter or comma to add · Backspace to remove</p>
           </div>
+
+          {isEditing && (
+            <div className="flex flex-col gap-1.5">
+              <label className="text-fg-muted text-sm">Status</label>
+              <div className="flex gap-2">
+                {STATUS_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setValue("status", opt.value)}
+                    className={`flex-1 py-1.5 rounded text-xs font-semibold border transition-all duration-150 cursor-pointer
+                      ${status === opt.value
+                        ? opt.activeClass
+                        : "bg-transparent border-border text-fg-muted hover:border-ring hover:text-fg"
+                      }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 

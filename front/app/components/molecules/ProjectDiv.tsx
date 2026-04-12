@@ -3,6 +3,12 @@ import TecnologiesPills from "../atoms/TecnologiesPills";
 import ProgressBar from "./ProgressBar";
 import useTimeAgo from "@/src/shared/hooks/useTimeAgo";
 
+const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
+  ACTIVE:    { label: "Active",    className: "bg-[#14532d] text-[#4ade80]"  },
+  COMPLETED: { label: "Completed", className: "bg-[#1e3a5f] text-[#60a5fa]"  },
+  ARCHIVED:  { label: "Archived",  className: "bg-overlay   text-fg-muted"    },
+};
+
 interface IProjectDivProps {
   id: number;
   title: string;
@@ -38,8 +44,8 @@ export default function ProjectDiv({
               <h3 className="text-2xl font-bold">{title}</h3>
               <p className="text-fg-muted">{description}</p>
             </div>
-            <div className="bg-[#1a3327] py-1 px-3 text-xs rounded text-success self-start">
-              <p>{status}</p>
+            <div className={`py-1 px-3 text-xs font-semibold rounded self-start ${STATUS_CONFIG[status]?.className ?? STATUS_CONFIG.ACTIVE.className}`}>
+              {STATUS_CONFIG[status]?.label ?? status}
             </div>
           </div>
 
