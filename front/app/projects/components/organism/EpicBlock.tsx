@@ -9,6 +9,8 @@ import NewTaskForm from "./NewTaskForm";
 import EditEpicForm from "./EditEpicForm";
 import { useBoardContext } from "../../context/ProjectBoardContext";
 import ActionsButtons from "../molecules/ActionsButtons";
+import ModalDelete from "../atoms/ModalDelete";
+import useDeleteEpic from "@/src/projects/hooks/useDeleteEpic";
 
 interface EpicBlockProps {
   epic: Epic;
@@ -25,7 +27,9 @@ export function EpicBlock({
   const [open, setOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const { loading: deleteLoading, handleDeleteEpic } = useDeleteEpic(epic.id, projectId);
 
   return (
     <div>
@@ -72,7 +76,7 @@ export function EpicBlock({
           </span>
         </button>
 
-        <ActionsButtons onEdit={() => setShowEditForm(true)} onDelete={() => {}} compact />
+        <ActionsButtons onEdit={() => setShowEditForm(true)} onDelete={() => setShowDeleteModal(true)} compact />
       </div>
 
       <AnimatePresence initial={false}>
@@ -129,6 +133,19 @@ export function EpicBlock({
         <EditEpicForm
           epic={epic}
           onClose={() => setShowEditForm(false)}
+        />
+      )}
+
+      {showDeleteModal && (
+        <ModalDelete
+          title="Delete epic"
+          description="This action cannot be undone. All tasks and acceptance criteria inside this epic will be permanently deleted."
+          onConfirm={async () => {
+            const success = await handleDeleteEpic();
+            if (success) setShowDeleteModal(false);
+          }}
+          onClose={() => setShowDeleteModal(false)}
+          loading={deleteLoading}
         />
       )}
     </div>

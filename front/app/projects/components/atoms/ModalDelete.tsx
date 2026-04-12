@@ -3,12 +3,14 @@
 import { Trash2, X } from "lucide-react";
 
 interface ModalDeleteProps {
+  title: string;
+  description: string;
   onConfirm: () => void;
   onClose: () => void;
   loading?: boolean;
 }
 
-export default function ModalDelete({ onConfirm, onClose, loading }: ModalDeleteProps) {
+export default function ModalDelete({ title, description, onConfirm, onClose, loading }: ModalDeleteProps) {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
@@ -23,7 +25,7 @@ export default function ModalDelete({ onConfirm, onClose, loading }: ModalDelete
             <div className="p-2 bg-red-950/50 border border-red-800/40 rounded-lg">
               <Trash2 className="w-4 h-4 text-red-400" />
             </div>
-            <h2 className="text-fg font-semibold">Delete project</h2>
+            <h2 className="text-fg font-semibold">{title}</h2>
           </div>
           <button
             onClick={onClose}
@@ -33,9 +35,7 @@ export default function ModalDelete({ onConfirm, onClose, loading }: ModalDelete
           </button>
         </div>
 
-        <p className="text-fg-muted text-sm leading-relaxed">
-          This action <span className="text-fg font-medium">cannot be undone</span>. All epics, tasks, and acceptance criteria will be permanently deleted.
-        </p>
+        <p className="text-fg-muted text-sm leading-relaxed">{description}</p>
 
         <div className="flex gap-2 justify-end">
           <button

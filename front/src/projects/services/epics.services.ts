@@ -1,4 +1,4 @@
-import { postFetcher, patchFetcher } from "@/utils/utils";
+import { postFetcher, patchFetcher, deleteFetcher } from "@/utils/utils";
 import { CreateEpicDto, CreateEpicResponse, UpdateEpicDto, Epic } from "../types/projects.types";
 
 export function createEpic(
@@ -13,4 +13,8 @@ export function updateEpic(
   dto: UpdateEpicDto,
 ): Promise<{ epic: Epic }> {
   return patchFetcher<{ epic: Epic }>(`epics/${epicId}`, dto);
+}
+
+export function deleteEpic(epicId: number): Promise<void> {
+  return deleteFetcher(`epics/${epicId}`);
 }

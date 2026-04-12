@@ -229,6 +229,8 @@ export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onC
 
     {showDeleteModal && task && (
       <ModalDelete
+        title="Delete task"
+        description="This action cannot be undone. The task and all its acceptance criteria will be permanently deleted."
         onConfirm={async () => {
           const success = await handleDeleteTask();
           if (success) { setShowDeleteModal(false); onClose(); }

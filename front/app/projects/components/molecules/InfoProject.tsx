@@ -57,6 +57,8 @@ export default function InfoProject({
       />
       {isDelete && (
         <ModalDelete
+          title="Delete project"
+          description="This action cannot be undone. All epics, tasks and acceptance criteria will be permanently deleted."
           onConfirm={handleDeleteProject}
           onClose={() => setIsDelete(false)}
           loading={loading}
