@@ -1,4 +1,4 @@
-import { postFetcher, patchFetcher } from "@/utils/utils";
+import { postFetcher, patchFetcher, deleteFetcher } from "@/utils/utils";
 import { CreateTaskDto, CreateTaskResponse, UpdateTaskDto, Task } from "../types/projects.types";
 
 export function createTask(
@@ -13,4 +13,8 @@ export function updateTask(
   dto: UpdateTaskDto,
 ): Promise<{ task: Task }> {
   return patchFetcher<{ task: Task }>(`tasks/${taskId}`, dto);
+}
+
+export function deleteTask(taskId: number): Promise<void> {
+  return deleteFetcher(`tasks/${taskId}`);
 }

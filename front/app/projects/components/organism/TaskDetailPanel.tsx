@@ -7,6 +7,9 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import EditTaskForm from "./EditTaskForm";
 import ActionsButtons from "../molecules/ActionsButtons";
+import ModalDelete from "../atoms/ModalDelete";
+import useDeleteTask from "@/src/projects/hooks/useDeleteTask";
+import { useBoardContext } from "../../context/ProjectBoardContext";
 
 interface TaskDetailPanelProps {
   task: Task | null;
@@ -17,9 +20,12 @@ interface TaskDetailPanelProps {
 }
 
 export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onClose }: TaskDetailPanelProps) {
+  const { projectId } = useBoardContext();
   const status = task ? STATUS_CONFIG[task.status] : null;
   const priority = task ? PRIORITY_CONFIG[task.priority] : null;
   const [showEditForm, setShowEditForm] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { loading: deleteLoading, handleDeleteTask } = useDeleteTask(task?.id ?? 0, projectId);
 
   return (
     <>
@@ -58,7 +64,7 @@ export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onC
                 <ActionsButtons
                   compact
                   onEdit={() => setShowEditForm(true)}
-                  onDelete={() => {}}
+                  onDelete={() => setShowDeleteModal(true)}
                 />
                 <button
                   onClick={onClose}
@@ -218,6 +224,17 @@ export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onC
       <EditTaskForm
         task={task}
         onClose={() => setShowEditForm(false)}
+      />
+    )}
+
+    {showDeleteModal && task && (
+      <ModalDelete
+        onConfirm={async () => {
+          const success = await handleDeleteTask();
+          if (success) { setShowDeleteModal(false); onClose(); }
+        }}
+        onClose={() => setShowDeleteModal(false)}
+        loading={deleteLoading}
       />
     )}
   </>
