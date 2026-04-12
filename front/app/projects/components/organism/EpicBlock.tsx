@@ -21,37 +21,48 @@ export function EpicBlock({ epic, onTaskSelect, selectedTaskId }: EpicBlockProps
 
   return (
     <div>
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="w-200 flex items-center gap-3 px-4 py-3 bg-surface border border-border rounded-lg hover:border-ring transition duration-200 text-left"
-        style={{ borderLeftWidth: 3, borderLeftColor: epic.color }}
-      >
-        <motion.span
-          animate={{ rotate: open ? 90 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="text-fg-muted shrink-0"
+      <div className="w-200 flex items-center gap-2">
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="flex-1 flex items-center gap-3 px-4 py-3 bg-surface border border-border rounded-lg hover:border-ring transition duration-200 text-left"
+          style={{ borderLeftWidth: 3, borderLeftColor: epic.color }}
         >
-          <ChevronRight className="w-4 h-4" />
-        </motion.span>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold" style={{ color: epic.color }}>
-              #{epic.id}
-            </span>
-            <span className="text-sm font-semibold text-fg truncate">
-              {epic.name}
-            </span>
+          <motion.span
+            animate={{ rotate: open ? 90 : 0 }}
+            transition={{ duration: 0.2 }}
+            className="text-fg-muted shrink-0"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </motion.span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold" style={{ color: epic.color }}>
+                #{epic.id}
+              </span>
+              <span className="text-sm font-semibold text-fg truncate">
+                {epic.name}
+              </span>
+            </div>
+            {epic.description && (
+              <p className="text-xs text-fg-muted mt-0.5 truncate">
+                {epic.description}
+              </p>
+            )}
           </div>
-          {epic.description && (
-            <p className="text-xs text-fg-muted mt-0.5 truncate">
-              {epic.description}
-            </p>
-          )}
-        </div>
-        <span className="text-xs text-fg-muted shrink-0">
-          {epic.tasksDone}/{epic.tasksTotal} tasks
-        </span>
-      </button>
+          <span className="text-xs text-fg-muted shrink-0">
+            {epic.tasksDone}/{epic.tasksTotal} tasks
+          </span>
+        </button>
+
+        {/* TODO: edit epic */}
+        <button className="px-2 py-1 text-[10px] font-bold bg-red-900/40 text-red-400 border border-red-700/50 rounded cursor-not-allowed shrink-0">
+          EDIT
+        </button>
+        {/* TODO: delete epic */}
+        <button className="px-2 py-1 text-[10px] font-bold bg-red-900/40 text-red-400 border border-red-700/50 rounded cursor-not-allowed shrink-0">
+          DELETE
+        </button>
+      </div>
 
       <AnimatePresence initial={false}>
         {open && (

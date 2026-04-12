@@ -49,12 +49,22 @@ export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onC
               >
                 {epicName ?? "Epic"} · #{task.id}
               </div>
-              <button
-                onClick={onClose}
-                className="text-fg-muted hover:text-fg transition-colors duration-150 -mt-0.5"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                {/* TODO: edit task */}
+                <button className="px-2 py-0.5 text-[10px] font-bold bg-red-900/40 text-red-400 border border-red-700/50 rounded cursor-not-allowed">
+                  EDIT
+                </button>
+                {/* TODO: delete task */}
+                <button className="px-2 py-0.5 text-[10px] font-bold bg-red-900/40 text-red-400 border border-red-700/50 rounded cursor-not-allowed">
+                  DELETE
+                </button>
+                <button
+                  onClick={onClose}
+                  className="text-fg-muted hover:text-fg transition-colors duration-150 -mt-0.5"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             {/* Title */}
@@ -111,12 +121,13 @@ export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onC
                 </div>
                 <ul className="flex flex-col gap-2">
                   {task.acceptanceCriteria.map((ac) => (
-                    <li key={ac.id} className="flex items-start gap-2.5">
-                      <span
-                        className={`mt-1 shrink-0 w-1.5 h-1.5 rounded-full ${!ac.done ? "bg-border" : ""}`}
+                    <li key={ac.id} className="flex items-center gap-2.5">
+                      {/* TODO: toggle acceptance criteria done */}
+                      <button className="shrink-0 w-1.5 h-1.5 rounded-full border border-red-500/60 cursor-not-allowed"
                         style={ac.done ? { backgroundColor: epicColor } : undefined}
+                        title="TODO: toggle AC"
                       />
-                      <span className={`text-sm leading-snug ${ac.done ? "line-through text-fg-muted" : "text-fg-subtle"}`}>
+                      <span className={`text-sm leading-snug flex-1 ${ac.done ? "line-through text-fg-muted" : "text-fg-subtle"}`}>
                         {ac.text}
                       </span>
                     </li>
