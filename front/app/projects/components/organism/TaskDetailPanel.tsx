@@ -130,10 +130,9 @@ export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onC
                 <ul className="flex flex-col gap-2">
                   {task.acceptanceCriteria.map((ac) => (
                     <li key={ac.id} className="flex items-center gap-2.5">
-                      {/* TODO: toggle acceptance criteria done */}
-                      <button className="shrink-0 w-1.5 h-1.5 rounded-full border border-red-500/60 cursor-not-allowed"
-                        style={ac.done ? { backgroundColor: epicColor } : undefined}
-                        title="TODO: toggle AC"
+                      <span
+                        className="shrink-0 w-1.5 h-1.5 rounded-full"
+                        style={{ backgroundColor: ac.done ? (epicColor ?? "#6b7280") : "#374151" }}
                       />
                       <span className={`text-sm leading-snug flex-1 ${ac.done ? "line-through text-fg-muted" : "text-fg-subtle"}`}>
                         {ac.text}

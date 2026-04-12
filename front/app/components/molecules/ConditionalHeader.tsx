@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Header from "./Header";
 
-const HEADER_ROUTES = ["/", "/projects"];
+const HEADER_ROUTES = ["/", "/projects", "/profile"];
 
 export default function ConditionalHeader() {
   const pathname = usePathname();
