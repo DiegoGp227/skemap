@@ -57,6 +57,12 @@ export default function LoginForm() {
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
+      <div className="bg-blue-50 border border-blue-200 rounded p-3 text-sm text-blue-800">
+        <p className="font-semibold mb-1">Demo credentials</p>
+        <p>Email: <span className="font-mono">demo@skemap.dev</span></p>
+        <p>Password: <span className="font-mono">demo1234</span></p>
+      </div>
+
       <button
         type="submit"
         className="border-2 border-border px-1 py-2 bg-blue-600 hover:bg-blue-700 transition-all duration-500"
