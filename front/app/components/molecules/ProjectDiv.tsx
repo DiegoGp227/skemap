@@ -36,7 +36,7 @@ export default function ProjectDiv({
 }: IProjectDivProps) {
   const timeAgo = useTimeAgo(createdAt);
   return (
-    <div className="w-100 border-2 bg-surface border-border rounded transition duration-500 ease-in-out hover:border-ring flex flex-col justify-between">
+    <div className="w-full border-2 bg-surface border-border rounded transition duration-500 ease-in-out hover:border-ring flex flex-col justify-between">
       <Link href={`/projects/${id}`}>
         <div className="p-5 flex flex-col gap-5">
           <div className="flex gap-2 justify-between">

@@ -3,7 +3,7 @@ import Logo from "../../../../public/skemap_logo_v2.png";
 
 export default function InfoSection() {
   return (
-    <div className="relative flex h-full w-[42%] shrink-0 flex-col justify-between overflow-hidden border-r border-[#21262d] bg-[linear-gradient(145deg,#0f1923_0%,#0a1628_50%,#0d1117_100%)] p-12 after:absolute after:-right-20 after:-top-20 aafter:w-60 after:h-60 after:rounded-full after:bg-[radial-gradient(circle,#4a9eff1a_0%,transparent_65%)] after:content-['']">
+    <div className="relative hidden md:flex h-full w-[42%] shrink-0 flex-col justify-between overflow-hidden border-r border-[#21262d] bg-[linear-gradient(145deg,#0f1923_0%,#0a1628_50%,#0d1117_100%)] p-12 after:absolute after:-right-20 after:-top-20 aafter:w-60 after:h-60 after:rounded-full after:bg-[radial-gradient(circle,#4a9eff1a_0%,transparent_65%)] after:content-['']">
       <div
         className="pointer-events-none absolute inset-0 opacity-50"
         style={{

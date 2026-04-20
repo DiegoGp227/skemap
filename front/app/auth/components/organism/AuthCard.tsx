@@ -3,7 +3,7 @@ import InfoSection from "../molecules/InfoDiv";
 
 export default function AuthCard() {
     return(
-        <div className="w-215 h-137.5 rounded-md overflow-hidden border-2 border-border flex">
+        <div className="w-full max-w-3xl rounded-md overflow-hidden border-2 border-border flex">
             <InfoSection /> 
             <AuthSystem />
         </div>
