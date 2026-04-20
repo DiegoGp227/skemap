@@ -4,6 +4,11 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
+const DEMO_CREDENTIALS: ICredentials = {
+  email: "demo@skemap.dev",
+  password: "demo1234",
+};
+
 export default function LoginForm() {
   const {
     register,
@@ -57,18 +62,45 @@ export default function LoginForm() {
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
-      <div className="bg-blue-50 border border-blue-200 rounded p-3 text-sm text-blue-800">
-        <p className="font-semibold mb-1">Demo credentials</p>
-        <p>Email: <span className="font-mono">demo@skemap.dev</span></p>
-        <p>Password: <span className="font-mono">demo1234</span></p>
-      </div>
+      <button
+        type="button"
+        onClick={() => login(DEMO_CREDENTIALS)}
+        disabled={loading}
+        className="flex items-center justify-center gap-2 border-2 border-blue-600 px-1 py-2 bg-base hover:bg-gray-900 transition-all duration-500 rounded font-semibold text-white"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-5 h-5"
+        >
+          <path
+            fillRule="evenodd"
+            d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.818a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .845-.143Z"
+            clipRule="evenodd"
+          />
+        </svg>
+        Start Demo
+      </button>
 
       <button
         type="submit"
-        className="border-2 border-border px-1 py-2 bg-blue-600 hover:bg-blue-700 transition-all duration-500"
+        className="flex items-center justify-center gap-2 border-2 border-border px-1 py-2 bg-blue-600 hover:bg-blue-700 transition-all duration-500 text-white"
         disabled={loading}
       >
-        {loading ? "loading..." : "send"}
+        {loading ? "Loading..." : (
+          <>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-5 h-5"
+            >
+              <path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z" />
+            </svg>
+            Send
+          </>
+        )}
       </button>
     </form>
   );
