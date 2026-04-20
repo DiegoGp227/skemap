@@ -30,14 +30,14 @@ export default function FilterForm({
   }, [searchValue, onFilterSearch]);
 
   return (
-    <form className="flex w-full justify-between gap-5">
+    <form className="flex flex-col sm:flex-row w-full gap-3">
       <input
         placeholder="search Project..."
         {...register("search")}
         className="w-full p-2 border-2 border-border rounded focus:border-ring focus:outline-none"
       />
 
-      <div className="flex gap-5">
+      <div className="flex flex-wrap gap-2">
         <button
           type="button"
           onClick={() => onFilterStatus("all")}

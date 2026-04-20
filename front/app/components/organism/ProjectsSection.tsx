@@ -31,7 +31,7 @@ export default function ProjectsSection({
             </button>
           </div>
 
-          <div className="w-full flex flex-wrap gap-5 justify-center">
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {projects.map((project) => (
               <ProjectDiv
                 key={project.id}

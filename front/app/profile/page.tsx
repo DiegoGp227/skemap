@@ -28,7 +28,7 @@ export default function ProfilePage() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto px-8 py-16 grid grid-cols-[280px_1fr] gap-16">
+    <div className="max-w-5xl mx-auto px-4 py-10 md:px-8 md:py-16 grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8 md:gap-16">
       {/* Left — identity */}
       <div className="flex flex-col gap-5">
         <div className="w-24 h-24 rounded-full bg-overlay border border-border flex items-center justify-center select-none">

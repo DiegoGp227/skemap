@@ -17,7 +17,7 @@ export function TaskRow({ task, selected, onStatusChange, onSelect }: TaskRowPro
   return (
     <div
       onClick={onSelect}
-      className={`flex items-center gap-3 px-4 py-3 bg-surface border rounded-md cursor-pointer hover:border-ring transition duration-200 w-196 ${
+      className={`flex items-center gap-3 px-4 py-3 bg-surface border rounded-md cursor-pointer hover:border-ring transition duration-200 w-full ${
         selected ? "border-ring" : "border-border"
       }`}
     >
@@ -32,7 +32,7 @@ export function TaskRow({ task, selected, onStatusChange, onSelect }: TaskRowPro
       </span>
       <span className="text-sm text-fg flex-1 truncate">{task.title}</span>
       {task.dueDate && (
-        <span className="text-xs text-fg-muted shrink-0">
+        <span className="hidden sm:inline text-xs text-fg-muted shrink-0">
           {new Date(task.dueDate).toLocaleDateString()}
         </span>
       )}

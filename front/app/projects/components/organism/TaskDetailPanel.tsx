@@ -50,7 +50,7 @@ export function TaskDetailPanel({ task, epicColor, epicName, onStatusChange, onC
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-            className="fixed top-0 right-0 h-full w-95 z-50 flex flex-col bg-base border-l border-border overflow-y-auto"
+            className="fixed top-0 right-0 h-full w-full sm:w-95 z-50 flex flex-col bg-base border-l border-border overflow-y-auto"
           >
             {/* Header */}
             <div className="flex items-start justify-between p-6 pb-4">
