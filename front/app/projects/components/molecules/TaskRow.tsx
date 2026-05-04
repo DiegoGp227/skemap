@@ -1,6 +1,6 @@
 "use client";
 
-import { Task, TaskStatus } from "@/src/projects/types/projects.types";
+import { Task } from "@/src/projects/types/projects.types";
 import { PRIORITY_CONFIG, STATUS_CONFIG } from "../config/taskConfig";
 
 interface TaskRowProps {
