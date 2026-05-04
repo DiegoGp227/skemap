@@ -38,11 +38,9 @@ export const createUser = async (
     },
   });
 
-  const token = jwt.sign(
-    { id: user.id, email: user.email },
-    env.JWT_SECRET,
-    { expiresIn: env.TOKEN_EXPIRATION as SignOptions["expiresIn"] },
-  );
+  const token = jwt.sign({ id: user.id, email: user.email }, env.JWT_SECRET, {
+    expiresIn: env.TOKEN_EXPIRATION as SignOptions["expiresIn"],
+  });
 
   return { user, token };
 };
@@ -76,11 +74,9 @@ export const validateUser = async (
     updatedAt: existingUser.updatedAt,
   };
 
-  const token = jwt.sign(
-    { id: user.id, email: user.email },
-    env.JWT_SECRET,
-    { expiresIn: env.TOKEN_EXPIRATION as SignOptions["expiresIn"] },
-  );
+  const token = jwt.sign({ id: user.id, email: user.email }, env.JWT_SECRET, {
+    expiresIn: env.TOKEN_EXPIRATION as SignOptions["expiresIn"],
+  });
 
   return { user, token };
 };
