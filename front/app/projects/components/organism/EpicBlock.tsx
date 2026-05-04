@@ -87,7 +87,7 @@ export function EpicBlock({
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="overflow-hidden w-200"
+            className="overflow-hidden"
           >
             <div className="flex flex-col gap-1.5 pl-4 pt-2 pb-1">
               {epic.tasks.length === 0 ? (
