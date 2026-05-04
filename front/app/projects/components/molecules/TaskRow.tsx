@@ -17,7 +17,7 @@ export function TaskRow({ task, selected, onStatusChange, onSelect }: TaskRowPro
   return (
     <div
       onClick={onSelect}
-      className={`flex items-center gap-3 px-4 py-3 bg-surface border rounded-md cursor-pointer hover:border-ring transition duration-200 w-200 ${
+      className={`flex items-center gap-3 px-4 py-3 bg-surface border rounded-md cursor-pointer hover:border-ring transition duration-200 w-180 ${
         selected ? "border-ring" : "border-border"
       }`}
     >

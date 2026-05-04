@@ -45,15 +45,10 @@ export default function LoginForm() {
         <p className="text-red-500 text-sm">{errors.email.message}</p>
       )}
 
-      <div className="flex flex-col">
-        <div className="flex justify-between items-center">
-          <label htmlFor="password" className="text-fg-muted">
-            Password
-          </label>
-          <Link href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-400 transition-colors">
-            Forgot password?
-          </Link>
-        </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="password" className="text-fg-muted">
+          Password
+        </label>
         <input
           type="password"
           id="password"
@@ -61,6 +56,9 @@ export default function LoginForm() {
           className="border-2 border-border px-1 py-2 rounded focus:outline-none focus:border-blue-600 transition-all duration-500"
           disabled={loading}
         />
+        <Link href="/forgot-password" className="text-xs text-fg-muted hover:text-blue-500 transition-colors self-end mt-1">
+          Forgot password?
+        </Link>
       </div>
       {errors.password && (
         <p className="text-red-500 text-sm">{errors.password.message}</p>
