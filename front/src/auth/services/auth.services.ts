@@ -4,7 +4,7 @@ import {
   ICreateUserRequest,
   ICredentials,
 } from "../types/auth.types";
-import { LoginURL, SignUpURL } from "@/src/shared/constants/urls";
+import { LoginURL, SignUpURL, ForgotPasswordURL, ResetPasswordURL } from "@/src/shared/constants/urls";
 
 export function loginService(
   credentials: ICredentials,
@@ -28,4 +28,12 @@ export function SignUpService(
     name: credentials.name,
   });
   return response;
+}
+
+export function forgotPasswordService(email: string): Promise<{ message: string }> {
+  return postFetcher<{ message: string }>(ForgotPasswordURL.toString(), { email });
+}
+
+export function resetPasswordService(token: string, password: string): Promise<{ message: string }> {
+  return postFetcher<{ message: string }>(ResetPasswordURL.toString(), { token, password });
 }

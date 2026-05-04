@@ -1,6 +1,7 @@
 import { useLogin } from "@/src/auth/hooks/useLogin";
 import { ICredentials } from "@/src/auth/types/auth.types";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -45,9 +46,14 @@ export default function LoginForm() {
       )}
 
       <div className="flex flex-col">
-        <label htmlFor="password" className="text-fg-muted">
-          Password
-        </label>
+        <div className="flex justify-between items-center">
+          <label htmlFor="password" className="text-fg-muted">
+            Password
+          </label>
+          <Link href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-400 transition-colors">
+            Forgot password?
+          </Link>
+        </div>
         <input
           type="password"
           id="password"

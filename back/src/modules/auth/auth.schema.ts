@@ -36,5 +36,28 @@ export const signupSchema = z.object({
    Types
 ========================= */
 
+/* =========================
+   Forgot Password
+========================= */
+
+export const forgotPasswordSchema = z.object({
+  email: emailSchema,
+});
+
+/* =========================
+   Reset Password
+========================= */
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1),
+  password: passwordSchema,
+});
+
+/* =========================
+   Types
+========================= */
+
 export type LoginDTO = z.infer<typeof loginSchema>;
 export type SignupDTO = z.infer<typeof signupSchema>;
+export type ForgotPasswordDTO = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordDTO = z.infer<typeof resetPasswordSchema>;

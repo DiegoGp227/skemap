@@ -1,6 +1,6 @@
 import { Router } from "express";
 import dbCheck from "../modules/test/test.js";
-import { login, signup } from "../modules/auth/auth.controllers.js";
+import { login, signup, forgotPassword, resetPasswordController } from "../modules/auth/auth.controllers.js";
 import {
   getProjects,
   getProject,
@@ -23,6 +23,8 @@ router.get("/db", dbCheck);
 // Auth Routes
 router.post("/signup", signup);
 router.post("/login", login);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPasswordController);
 
 // Projects Routes
 router.get("/projects", authMiddleware, getProjects);

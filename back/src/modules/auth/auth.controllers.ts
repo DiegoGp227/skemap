@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { ValidationError } from "../../errors/appError.js";
 import { asyncHandler } from "../../middlewares/asyncHandler.js";
-import { createUser, validateUser } from "./auth.services.js";
-import { loginSchema, signupSchema } from "./auth.schema.js";
+import { createUser, validateUser, requestPasswordReset, resetPassword } from "./auth.services.js";
+import { loginSchema, signupSchema, forgotPasswordSchema, resetPasswordSchema } from "./auth.schema.js";
 
 /**
  * @route POST /signup
@@ -72,4 +72,52 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
       updatedAt: user.updatedAt,
     },
   });
+});
+
+/**
+ * @route POST /forgot-password
+ * @body { email }
+ * @returns { message }
+ */
+export const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+  const validation = forgotPasswordSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    const errors = validation.error.issues.reduce<Record<string, string>>(
+      (acc, err) => {
+        acc[err.path.join(".")] = err.message;
+        return acc;
+      },
+      {},
+    );
+    throw new ValidationError("Validation errors", errors);
+  }
+
+  await requestPasswordReset(validation.data.email);
+
+  res.status(200).json({ message: "If that email exists, a reset link has been sent" });
+});
+
+/**
+ * @route POST /reset-password
+ * @body { token, password }
+ * @returns { message }
+ */
+export const resetPasswordController = asyncHandler(async (req: Request, res: Response) => {
+  const validation = resetPasswordSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    const errors = validation.error.issues.reduce<Record<string, string>>(
+      (acc, err) => {
+        acc[err.path.join(".")] = err.message;
+        return acc;
+      },
+      {},
+    );
+    throw new ValidationError("Validation errors", errors);
+  }
+
+  await resetPassword(validation.data.token, validation.data.password);
+
+  res.status(200).json({ message: "Password updated successfully" });
 });

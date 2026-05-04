@@ -89,3 +89,15 @@ export class InvalidCredentialsError extends AppError {
     super(message, 401, 'INVALID_CREDENTIALS', true);
   }
 }
+
+export class InvalidResetTokenError extends AppError {
+  constructor() {
+    super('Invalid or already used reset token', 400, 'INVALID_RESET_TOKEN', true);
+  }
+}
+
+export class ExpiredResetTokenError extends AppError {
+  constructor() {
+    super('Reset token has expired', 400, 'EXPIRED_RESET_TOKEN', true);
+  }
+}

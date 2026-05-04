@@ -15,3 +15,7 @@ export const projectBoardURL = (id: string) =>
 
 export const taskURL = (id: string) =>
   new URL(`tasks/${id}/status`, BaseURL);
+
+export const ForgotPasswordURL = new URL("forgot-password", BaseURL);
+
+export const ResetPasswordURL = new URL("reset-password", BaseURL);
