@@ -10,7 +10,7 @@ export default function SelectAuthSystem({setIsLogin, isLogin} : ISelectAuthSyst
         onClick={() => {
           setIsLogin(true);
         }}
-        className={`${isLogin ? "bg-border" : ""} justify-center flex items-center p-1 rounded`}
+        className={`${isLogin ? "bg-border" : ""} justify-center flex items-center p-1 rounded cursor-pointer`}
       >
         Login
       </button>
@@ -18,7 +18,7 @@ export default function SelectAuthSystem({setIsLogin, isLogin} : ISelectAuthSyst
         onClick={() => {
           setIsLogin(false);
         }}
-        className={`${isLogin ? "" : "bg-border"} justify-center flex items-center p-1 rounded`}
+        className={`${isLogin ? "" : "bg-border"} justify-center flex items-center p-1 rounded cursor-pointer`}
       >
         Register
       </button>

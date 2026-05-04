@@ -87,7 +87,7 @@ export default function SignUpForm() {
 
       <button
         type="submit"
-        className="border-2 border-border px-1 py-2 bg-blue-600 hover:bg-blue-700 transition-all duration-500"
+        className="border-2 border-border px-1 py-2 bg-blue-600 hover:bg-blue-700 transition-all duration-500 cursor-pointer"
         disabled={loading}
       >
         {loading ? "loading..." : "send"}
