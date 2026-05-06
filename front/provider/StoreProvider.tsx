@@ -48,7 +48,8 @@ export const SWRProvider = ({ children }: { children: ReactNode }) => {
     };
 
     window.addEventListener("app:unauthorized", handleUnauthorized);
-    return () => window.removeEventListener("app:unauthorized", handleUnauthorized);
+    return () =>
+      window.removeEventListener("app:unauthorized", handleUnauthorized);
   }, [router]);
 
   if (!isClient) {
